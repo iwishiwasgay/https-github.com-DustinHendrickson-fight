@@ -1,0 +1,196 @@
+weapons:
+  1:
+    - name: 'Dagger'
+      damage: 3
+      element: 'None'
+    - name: 'Staff'
+      damage: 4
+      element: 'None'
+    - name: 'Fiery Staff'
+      damage: 2
+      element: 'Fire'
+    - name: 'Water Wand'
+      damage: 2
+      element: 'Water'
+    - name: 'Poison Fang'
+      damage: 2
+      element: 'Life'
+  2:
+    - name: 'Short Sword'
+      damage: 4
+      element: 'None'
+    - name: 'Long Sword'
+      damage: 5
+      element: 'None'
+    - name: 'Fiery Long Sword'
+      damage: 3
+      element: 'Fire'
+    - name: 'Trident'
+      damage: 3
+      element: 'Water'
+    - name: 'Corrosive Long Sword'
+      damage: 3
+      element: 'Life'
+  3:
+    - name: 'Bastard Sword'
+      damage: 5
+      element: 'None'
+    - name: 'Great Sword'
+      damage: 6
+      element: 'None'
+    - name: 'Fiery Long Sword'
+      damage: 4
+      element: 'Fire'
+    - name: 'Trident'
+      damage: 4
+      element: 'Water'
+    - name: 'Corrosive Long Sword'
+      damage: 4
+      element: 'Life'
+  4:
+    - name: 'Pole Arm'
+      damage: 6
+      element: 'None'
+    - name: 'Halbred'
+      damage: 7
+      element: 'None'
+    - name: 'Lava Staff'
+      damage: 5
+      element: 'Fire'
+    - name: 'Icey Spear'
+      damage: 5
+      element: 'Water'
+    - name: 'Acid Flail'
+      damage: 5
+      element: 'Life'
+  5:
+    - name: 'Flail'
+      damage: 6
+      element: 'None'
+    - name: 'Tripple Flail'
+      damage: 7
+      element: 'None'
+    - name: 'Tempered Long Sword'
+      damage: 5
+      element: 'Fire'
+    - name: 'Frozen Long Bow'
+      damage: 5
+      element: 'Water'
+    - name: 'Poisoned Short Bow'
+      damage: 5
+      element: 'Life'
+  6:
+    - name: 'Boomerang'
+      damage: 7
+      element: 'None'
+    - name: 'Mace'
+      damage: 8
+      element: 'None'
+    - name: 'Magma Mallet'
+      damage: 6
+      element: 'Fire'
+    - name: 'Hydro Canon'
+      damage: 6
+      element: 'Water'
+    - name: 'Schimitar of Life'
+      damage: 6
+      element: 'Life'
+
+armor:
+  1:
+    - name: 'Cloth'
+      armor: 1
+      element: 'None'
+    - name: 'Robes'
+      armor: 2
+      element: 'None'
+    - name: 'Mystic Flame Robes'
+      armor: 1
+      element: 'Fire'
+    - name: 'Mystic Water Robes'
+      armor: 1
+      element: 'Water'
+    - name: 'Mystic Life Robes'
+      armor: 1
+      element: 'Life'
+  2:
+    - name: 'Spun Cloth'
+      armor: 2
+      element: 'None'
+    - name: 'Leather'
+      armor: 3
+      element: 'None'
+    - name: 'Fire Gauntlet'
+      armor: 2
+      element: 'Fire'
+    - name: 'Ice Helmet'
+      armor: 2
+      element: 'Water'
+    - name: 'Cape of Leaves'
+      armor: 2
+      element: 'Life'
+  3:
+    - name: 'Hardened Leather'
+      armor: 4
+      element: 'None'
+    - name: 'Buckler'
+      armor: 5
+      element: 'None'
+    - name: 'Lava Boots'
+      armor: 4
+      element: 'Fire'
+    - name: 'Bracer of Water'
+      armor: 4
+      element: 'Water'
+    - name: 'Root Shield'
+      armor: 4
+      element: 'Life'
+  4:
+    - name: 'Chainmail'
+      armor: 5
+      element: 'None'
+    - name: 'Great Shield'
+      armor: 6
+      element: 'None'
+    - name: 'Heat Helm'
+      armor: 5
+      element: 'Fire'
+    - name: 'Snowflake Cowl'
+      armor: 5
+      element: 'Water'
+    - name: 'Corrosive Cape'
+      armor: 5
+      element: 'Life'
+  5:
+    - name: 'Plate'
+      armor: 6
+      element: 'None'
+    - name: 'Tower Shield'
+      armor: 7
+      element: 'None'
+    - name: 'Tempered Plate'
+      armor: 6
+      element: 'Fire'
+    - name: 'Hydrating Boots'
+      armor: 6
+      element: 'Water'
+    - name: 'Acidic Paudlrons'
+      armor: 6
+      element: 'Life'
+  6:
+    - name: 'Titanium Plate'
+      armor: 7
+      element: 'None'
+    - name: 'Plated Cape'
+      armor: 8
+      element: 'None'
+    - name: 'Dragon Skin'
+      armor: 7
+      element: 'Fire'
+    - name: 'Frozen Shield'
+      armor: 7
+      element: 'Water'
+    - name: 'Stormy Boots'
+      armor: 7
+      element: 'Life'
+    
