@@ -24,7 +24,7 @@ class Fight
 
 
   
-  #timer 120, method: :Give_AP
+  #timer 120, method: :attack(m, param)
   #def Give_AP
   #  @bot.database.set("user:Dustin:AP", @bot.database.get("user:Dustin:AP").to_i + 1)
   #end
@@ -214,6 +214,21 @@ class Fight
   end
   
   def attack(m, param)
+
+	@bot.channels.each do |chan|
+		m.reply "Channel: #{chan}"
+	
+		
+                usernameA = chan.users.sample[:nick]
+		m.reply "User: #{usernameA}"
+		
+		#chan.users.each do |user|
+		#	m.reply "User: #{user}"
+		#end
+		
+	end
+
+
 	if get_level(param).to_i >= 1
 		defender_has_account = true
 	else
