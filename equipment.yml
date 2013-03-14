@@ -95,6 +95,22 @@ weapons:
     - name: 'Schimitar of Life'
       damage: 6
       element: 'Life'
+  7:
+    - name: 'Throwing Hatchet'
+      damage: 8
+      element: 'None'
+    - name: 'Morning Star'
+      damage: 9
+      element: 'None'
+    - name: 'Lava Launcher'
+      damage: 7
+      element: 'Fire'
+    - name: 'Steam Staff'
+      damage: 7
+      element: 'Water'
+    - name: 'Organic Blade'
+      damage: 7
+      element: 'Life'
 
 armor:
   1:
@@ -192,5 +208,21 @@ armor:
       element: 'Water'
     - name: 'Stormy Boots'
       armor: 7
+      element: 'Life'
+  7:
+    - name: 'Forged Titanium'
+      armor: 8
+      element: 'None'
+    - name: 'Studded-Leather Cape'
+      armor: 9
+      element: 'None'
+    - name: 'Hellspawn Skin'
+      armor: 8
+      element: 'Fire'
+    - name: 'Glacial Buckler'
+      armor: 8
+      element: 'Water'
+    - name: 'Helm of Solitude'
+      armor: 8
       element: 'Life'
     

@@ -24,7 +24,7 @@ class Fight
 
 
   
-  #timer 120, method: :attack(m, param)
+  timer 120, method: :attack
   #def Give_AP
   #  @bot.database.set("user:Dustin:AP", @bot.database.get("user:Dustin:AP").to_i + 1)
   #end
@@ -42,9 +42,7 @@ class Fight
 	when 'help'
 	  help m
 	when 'quest'
-	  quest m
-	else
-	  attack m, command
+	  quest m	  
 	end
   end
   
@@ -213,50 +211,51 @@ class Fight
 	m.reply "-> New character created for 02#{m.user.nick}. Starting with [06#{starterweapon['name']} | DMG: 131-#{starterweapon['damage']} | ELE: 14#{starterweapon['element']} ] and [06#{starterarmor['name']} | ARM: 050-#{starterarmor['armor']} | ELE: 14#{starterarmor['element']}]"
   end
   
-  def attack(m, param)
-
-	@bot.channels.each do |chan|
-		m.reply "Channel: #{chan}"
+  def attack()
 	
+	chan = @bot.channels.sample
 		
-                usernameA = chan.users.sample[:nick]
-		m.reply "User: #{usernameA}"
-		
-		#chan.users.each do |user|
-		#	m.reply "User: #{user}"
-		#end
-		
-	end
+	channel = Channel(chan)
 
+		usernameA = ''
+		while usernameA == 'FightBot' || usernameA == ''
+			usernameA = chan.users.keys.sample.nick
+		end
+			
+		usernameB = ''
+		while usernameB == 'FightBot' || usernameB == '' || usernameA == usernameB
+			usernameB = chan.users.keys.sample.nick
+		end		
+	channel.msg "----------------------------------------------------"
 
-	if get_level(param).to_i >= 1
+	if get_level(usernameB).to_i >= 1
 		defender_has_account = true
 	else
 		defender_has_account = false
 	end
 	
-	if get_level(m.user.nick).to_i >= 1
+	if get_level(usernameA).to_i >= 1
 		attacker_has_account = true
 	else
 		attacker_has_account = false
 	end
 	
-	calculate_date(m.user.nick)
+	calculate_date(usernameA)
 	
-	if m.user.nick != param
-		if get_fights(m.user.nick).to_i < MAX_FIGHTS		
+	if usernameA != usernameB
+		if get_fights(usernameA).to_i < MAX_FIGHTS		
 			
 			if attacker_has_account == true and defender_has_account == true
-				save_fights(m.user.nick, get_fights(m.user.nick).to_i + 1)
+				save_fights(usernameA, get_fights(usernameA).to_i + 1)
 				
-				attacker_level = get_level(m.user.nick).to_i
-				defender_level = get_level(param).to_i
+				attacker_level = get_level(usernameA).to_i
+				defender_level = get_level(usernameB).to_i
 				
-				attacker_weapon = WEAPONS[attacker_level][get_weapon(m.user.nick).to_i]
-				defender_weapon = WEAPONS[defender_level][get_weapon(param).to_i]
+				attacker_weapon = WEAPONS[attacker_level][get_weapon(usernameA).to_i]
+				defender_weapon = WEAPONS[defender_level][get_weapon(usernameB).to_i]
 				
-				attacker_armor = ARMOR[attacker_level][get_armor(m.user.nick).to_i]
-				defender_armor = ARMOR[defender_level][get_armor(param).to_i]
+				attacker_armor = ARMOR[attacker_level][get_armor(usernameA).to_i]
+				defender_armor = ARMOR[defender_level][get_armor(usernameB).to_i]
 				
 				attacker_damage = rand(attacker_weapon['damage']) + 1
 				defender_damage = rand(defender_weapon['damage']) + 1
@@ -276,62 +275,65 @@ class Fight
 				end
 				
 				
-				m.reply "-> 02#{m.user.nick} [07#{get_level(m.user.nick)}] attacks 04#{param} with their 06#{attacker_weapon['name']} [DMG:02#{attacker_damage}-04#{defender_armor}:ARM] = 02#{attacker_damage_done} Damage Inflicted"
-				m.reply "-> 04#{param} [07#{get_level(param)}] counters 02#{m.user.nick} with their 06#{defender_weapon['name']} [DMG:04#{defender_damage}-02#{attacker_armor}:ARM] = 04#{defender_damage_done} Damage Inflicted"
+				channel.msg "-> 02#{usernameA} [07#{get_level(usernameA)}] attacks 04#{usernameB} with their 06#{attacker_weapon['name']} [DMG:02#{attacker_damage}-04#{defender_armor}:ARM] = 02#{attacker_damage_done} Damage Inflicted"
+				channel.msg "-> 04#{usernameB} [07#{get_level(usernameB)}] counters 02#{usernameA} with their 06#{defender_weapon['name']} [DMG:04#{defender_damage}-02#{attacker_armor}:ARM] = 04#{defender_damage_done} Damage Inflicted"
 				
 				if attacker_damage_done > defender_damage_done
 					base_exp = rand(MAX_EXPERIENCE_PER_WIN)+1
-					if get_level(param).to_i > get_level(m.user.nick).to_i
-						bonus_exp = (base_exp * (get_level(param).to_i - get_level(m.user.nick).to_i))
+					if get_level(usernameB).to_i > get_level(usernameA).to_i
+						bonus_exp = (base_exp * (get_level(usernameB).to_i - get_level(usernameA).to_i))
 					else
 						bonus_exp = 0
 					end
 					earned_exp = base_exp + bonus_exp
-					m.reply "-> 02#{m.user.nick}[07#{get_level(m.user.nick)}][03#{get_exp(m.user.nick)}/03#{get_level(m.user.nick).to_i*LEVEL_FACTOR}] beats 04#{param} [07#{get_level(param)}][03#{get_exp(param)}/03#{get_level(param).to_i*LEVEL_FACTOR}] and gains 03#{base_exp}+03#{bonus_exp}=03#{earned_exp} EXP."
-					save_exp(m.user.nick, earned_exp)
-					calculate_level(m.user.nick)
+					channel.msg "-> 02#{usernameA}[07#{get_level(usernameA)}][03#{get_exp(usernameA)}/03#{get_level(usernameA).to_i*LEVEL_FACTOR}] beats 04#{usernameB} [07#{get_level(usernameB)}][03#{get_exp(usernameB)}/03#{get_level(usernameB).to_i*LEVEL_FACTOR}] and gains 03#{base_exp}+03#{bonus_exp}=03#{earned_exp} EXP."
+					save_exp(usernameA, earned_exp)
+					calculate_level(usernameA)
 					
 				end
 				
 				if attacker_damage_done < defender_damage_done
 					base_exp = rand(MAX_EXPERIENCE_PER_WIN)+1
-					if get_level(m.user.nick).to_i > get_level(param).to_i
-						bonus_exp = (base_exp * (get_level(m.user.nick).to_i - get_level(param).to_i))
+					if get_level(usernameA).to_i > get_level(usernameB).to_i
+						bonus_exp = (base_exp * (get_level(usernameA).to_i - get_level(usernameB).to_i))
 					else
 						bonus_exp = 0
 					end
 					earned_exp = base_exp + bonus_exp
-					m.reply "-> 04#{param}[07#{get_level(param)}][03#{get_exp(param)}/03#{get_level(param).to_i*LEVEL_FACTOR}] beats 02#{m.user.nick}[07#{get_level(m.user.nick)}][03#{get_exp(m.user.nick)}/03#{get_level(m.user.nick).to_i*LEVEL_FACTOR}] and gains 03#{base_exp}+03#{bonus_exp}=03#{earned_exp} EXP."
-					save_exp(param, earned_exp)
-					calculate_level(param)
+					channel.msg "-> 04#{usernameB}[07#{get_level(usernameB)}][03#{get_exp(usernameB)}/03#{get_level(usernameB).to_i*LEVEL_FACTOR}] beats 02#{usernameA}[07#{get_level(usernameA)}][03#{get_exp(usernameA)}/03#{get_level(usernameA).to_i*LEVEL_FACTOR}] and gains 03#{base_exp}+03#{bonus_exp}=03#{earned_exp} EXP."
+					save_exp(usernameB, earned_exp)
+					calculate_level(usernameB)
 				end
 				
 				if attacker_damage_done == defender_damage_done
 					earned_exp = rand(MAX_EXPERIENCE_PER_TIE)+1
-					m.reply "-> 02#{m.user.nick}[07#{get_level(m.user.nick)}][03#{get_exp(m.user.nick)}/03#{get_level(m.user.nick).to_i*LEVEL_FACTOR}] ties 04#{param}[07#{get_level(param)}][03#{get_exp(param)}/03#{get_level(param).to_i*LEVEL_FACTOR}] and both gain 03#{earned_exp} EXP."
-					save_exp(m.user.nick, earned_exp)
-					save_exp(param, earned_exp)
-					calculate_level(m.user.nick)
-					calculate_level(param)
+					channel.msg "-> 02#{usernameA}[07#{get_level(usernameA)}][03#{get_exp(usernameA)}/03#{get_level(usernameA).to_i*LEVEL_FACTOR}] ties 04#{usernameB}[07#{get_level(usernameB)}][03#{get_exp(usernameB)}/03#{get_level(usernameB).to_i*LEVEL_FACTOR}] and both gain 03#{earned_exp} EXP."
+					save_exp(usernameA, earned_exp)
+					save_exp(usernameB, earned_exp)
+					calculate_level(usernameA)
+					calculate_level(usernameB)
 					
 				end
+
+	channel.msg "----------------------------------------------------"
+
 			else
 				if attacker_has_account == true and defender_has_account == false
-					@bot.msg(m.user.nick,"04->  #{param} has not setup a character.")
+					@bot.msg(usernameA,"04->  #{usernameB} has not setup a character.")
 				end
 				if attacker_has_account == false and defender_has_account == true
-					@bot.msg(m.user.nick,"04-> You have not setup a character.")
+					@bot.msg(usernameA,"04-> You have not setup a character.")
 				end
 				if attacker_has_account == false and defender_has_account == false
-					@bot.msg(m.user.nick,"04-> You and #{param} have not setup characters.")
+					@bot.msg(usernameA,"04-> You and #{usernameB} have not setup characters.")
 				end
 			end
 		else
-			@bot.msg(m.user.nick,"04-> You can only fight 02#{MAX_FIGHTS}04 times in 02#{TIME_BETWEEN_MAX_FIGHTS}04 seconds, you've got 03#{calculate_time_left(m.user.nick).to_i}04 seconds left.")
+			@bot.msg(usernameA,"04-> You can only fight 02#{MAX_FIGHTS}04 times in 02#{TIME_BETWEEN_MAX_FIGHTS}04 seconds, you've got 03#{calculate_time_left(usernameA).to_i}04 seconds left.")
 		end
 	else
-		@bot.msg(m.user.nick,"04-> You're trying to attack yourself? 5 EXP MINUS!")
-		save_exp(m.user.nick,-5)
+		@bot.msg(usernameA,"04-> You're trying to attack yourself? 5 EXP MINUS!")
+		save_exp(usernameA,-5)
 	end
   end
 end
