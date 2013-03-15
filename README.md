@@ -1,26 +1,17 @@
 # Fight Plugin
 
-
+An IRC bot plugin written for [CadBot_Cinch](https://github.com/cadwallion/cadbot_cinch) IRC Bot. 
 
 ## Installation
 
 Before you can install fight, you must have a working instance of Cadbot running.  Please see the [README](https://github.com/cadwallion/cadbot_cinch)
 for instructions on how to install and configure Cadbot.
 
-<<<<<<< HEAD
-If you're not installing via Git Clone, just create a new folder in the plugin directory called "fight" and copy the files into the folder.
-
-Usage
-----
-
-Once you've got the plugin folder setup start or restart your cadbot_cinch bot.
-=======
 To install Fight, first clone this repository to the `plugin` directory in your bot's `plugins` directory:
 
 ```
 cd BOT_DIRECTORY/plugins && git clone git://github.com/dustinhendrickson/fight.git 
 ```
->>>>>>> bdbc2f766754742b8830ec2c88611dad89c68ad8
 
 If you have customized where your plugins directory is located in your bot, be sure to update the clone 
 location accordingly. Restart your bot and the plugin will be automatically loaded.
