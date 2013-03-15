@@ -5,6 +5,7 @@ require 'yaml'
 #Code by Dustin Hendrickson
 #dustin.hendrickson@gmail.com
 
+
 class Fight
   include Cinch::Plugin
   prefix "@"
