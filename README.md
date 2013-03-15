@@ -11,12 +11,12 @@ Navigate to the plugin directory of your cadbot_cinch install and run the follow
 git clone git://github.com/dustinhendrickson/fight.git
 ```
 
-That's it, it's installed!
+If you're not installing via Git Clone, just create a new folder in the plugin directory called "fight" and copy the files into the folder.
 
 Usage
 ----
 
-Once you're installed, start up your bot.
+Once you've got the plugin folder setup start or restart your cadbot_cinch bot.
 
 Make sure to check cadbot_cinch readme for how to install the bot and set up the configuration files if you haven't already.
 
