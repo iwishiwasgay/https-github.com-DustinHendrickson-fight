@@ -192,7 +192,9 @@ class Fight
 		
 		chan = @bot.channels.sample
 		channel = Channel(chan)
-		
+
+		channel.msg "EVENT-LEVEL-UP------------------------------------"
+
 		channel.msg "-> 02#{param} reaches level 07#{get_level(param)}! Equips a new [06#{new_weapon['name']} | DMG: 131-#{new_weapon['damage']} | ELE: 14#{new_weapon['element']}] and [06#{new_armor['name']} | ARM: 050-#{new_armor['armor']} | ELE: 14#{new_armor['element']}]"
 	end
   end
