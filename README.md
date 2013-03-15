@@ -26,7 +26,7 @@ Fight adds two commands to your bot: `@fight create` and `@fight info username`.
 ## Game Info
 
 Fighting other people and winning results in gaining EXP, every `(100 * Level)` EXP gives you new level. Every 
-levelup you recieve a new random weapon and piece of armor. Weapons do damage from 1-WeaponDamage. Armor 
+levelup you recieve a new random weapon and piece of armor. Weapons do damage from `1-WeaponDamage`. Armor 
 protects `0-ArmorAmount`. To win a fight you have to do more damage then you take in a fight. Bonus EXP 
 is awarded for defeating an opponent higher level then you. This is an IDLE RPG, which means at 
 intervals the bot will pick two people with accounts in the channel and make them fight.
