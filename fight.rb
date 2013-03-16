@@ -10,57 +10,53 @@ class Fight
   include Cinch::Plugin
   prefix "@"
   
+  #Configuration Variables=======
   MAX_EXPERIENCE_PER_WIN = 10
   MAX_EXPERIENCE_PER_TIE = 5
 
   LEVEL_FACTOR = 100
-  
-  TIME_BETWEEN_MAX_FIGHTS = 15 #in seconds
-  MAX_FIGHTS = 2
 
-  TIME_BETWEEN_QUESTS = 120 #in seconds
-  QUEST_LENGTH = 60 #in seconds
+  TIMER_RANGE_MIN = 120
+  TIMER_RANGE_MAX = 240
 
+  MINIMUM_DAMAGE = 1
+  #==============================
+
+  #Read the config file in for items and set arrays.
   EQUIPMENT = YAML.load_file('plugins/fight/equipment.yml')
 
   WEAPONS = EQUIPMENT['weapons']
   ARMOR = EQUIPMENT['armor']
 
-
-  
+  #Timer Method to run the Attack Function every interval.
   timer 120, method: :attack
-  #def Give_AP
-  #  @bot.database.set("user:Dustin:AP", @bot.database.get("user:Dustin:AP").to_i + 1)
-  #end
   
+  #Regex to grab the command trigger string.
   match /^@fight (\S+) ?(.+)?/, method: :fight, :use_prefix => false
   
+  #Run the functions based on passed in command.
   def fight(m, command, param)
     case command
 	when 'info'
       info m, param
 	when 'create'
       create m
-	when 'save'
-      save m
 	when 'help'
-	  help m
-	when 'quest'
-	  quest m	  
+	  help m 
 	end
   end
   
-  
+  #Internal Reddis Function List
   def get_exp(param)
 	@bot.database.get("user:#{param}:exp")
   end
   
   def reset_exp(param)
-    	@bot.database.set("user:#{param}:exp", 0)
+    @bot.database.set("user:#{param}:exp", 0)
   end
 	
   def save_exp(param,exp)
-    	@bot.database.set("user:#{param}:exp", get_exp(param).to_i + exp.to_i)
+    @bot.database.set("user:#{param}:exp", get_exp(param).to_i + exp.to_i)
   end
   
   def get_level(param)
@@ -76,7 +72,7 @@ class Fight
   end
   
   def save_weapon(param, weapon)
-    	@bot.database.set("user:#{param}:weapon", weapon)
+    @bot.database.set("user:#{param}:weapon", weapon)
   end
   
   def get_armor(param)
@@ -84,41 +80,10 @@ class Fight
   end
   
   def save_armor(param, armor)
-        @bot.database.set("user:#{param}:armor", armor)
+    @bot.database.set("user:#{param}:armor", armor)
   end
   
-  def get_date(param)
-	@bot.database.get("user:#{param}:time")
-  end
-  
-  def save_date(param, time)
-	@bot.database.set("user:#{param}:time", time)
-  end
-  
-  def get_quest_date(param)
-	@bot.database.get("user:#{param}:questtime")
-  end
-  
-  def save_quest_date(param, time)
-	@bot.database.set("user:#{param}:questtime", time)
-  end
-  
-  def get_quests(param)
-	@bot.database.get("user:#{param}:quests")
-  end
-  
-  def save_quests(param, quests)
-	@bot.database.set("user:#{param}:quests", quests)
-  end
-  
-  def get_fights(param)
-	@bot.database.get("user:#{param}:fights")
-  end
-  
-  def save_fights(param, fights)
-	@bot.database.set("user:#{param}:fights", fights)
-  end
-  
+  #This function takes a username and displays that user's account details.
   def info (m, param)
 	if param.nil?
 		if get_level(m.user.nick).to_i >= 1
@@ -139,44 +104,7 @@ class Fight
 	end
   end
   
-  
-  
-  def calculate_date(param)
-	now = Time.now     # Current time
-	past = Time.parse(get_date(param))
-	
-	if now - past > TIME_BETWEEN_MAX_FIGHTS
-	  save_fights(param, 0)
-	  save_date(param, Time.now)
-	end
-	
-  end
-  
-  def calculate_quest_date(param)
-	now = Time.now     # Current time
-	past = Time.parse(get_quest_date(param))
-	
-	if now - past > TIME_BETWEEN_QUESTS
-	  save_quests(param, 0)
-	  save_quest_date(param, Time.now)
-	end
-	
-  end
-  
-  def calculate_quest_time_left(param)
-	now = Time.now     # Current time
-	past = Time.parse(get_quest_date(param))
-	
-	return TIME_BETWEEN_QUESTS - (now - past)
-  end
-  
-  def calculate_time_left(param)
-	now = Time.now     # Current time
-	past = Time.parse(get_date(param))
-	
-	return TIME_BETWEEN_MAX_FIGHTS - (now - past)
-  end
-  
+  #Checks to see if user has leveled up.
   def calculate_level(param)
 	current_level = get_level(param).to_i
 	required_exp_new_level = current_level * LEVEL_FACTOR
@@ -200,11 +128,13 @@ class Fight
 	end
   end
   
+  #Displays help documentation.
   def help(m)
-	@bot.msg(m.user.nick,"-> Command List:-> 07@fight create (Creates a new character at level 1), 07@fight Username, 07@fight info Username (Displays Level,Exp,Weapon)")
-	@bot.msg(m.user.nick,"-> Game Info:-> Fighting other people and winning results in gaining EXP, every (#{LEVEL_FACTOR} * Level) EXP gives you new level. Each new level you recieve a new weapon and armor piece of your current level. Weapons do damage from 1-WeaponDamage. Armor protects 0-ArmorAmount. To win a fight you have to do more damage then you take in a fight. Bonus EXP is awarded for defeating an opponent higher level then you.")
+	@bot.msg(m.user.nick,"-> Command List:-> 07@fight create (Creates a new character at level 1), 07@fight info Username (Displays Level,Exp,Equipment)")
+	@bot.msg(m.user.nick,"-> Game Info:-> Fighting other people and winning results in gaining EXP, every (#{LEVEL_FACTOR} * Level) EXP gives you new level. Each new level you recieve a new weapon and armor piece of your level.. Weapons do damage from 1-WeaponDamage. Armor protects 0-ArmorAmount. To win a fight you have to do more damage then you take in a fight. Bonus EXP is awarded for defeating an opponent higher level then you.")
   end
   
+  #Create a new character.
   def create(m)
 	randweapon = rand(5)
 	randarmor = rand(5)
@@ -212,51 +142,49 @@ class Fight
 	save_armor(m.user.nick, randarmor)
 	@bot.database.set("user:#{m.user.nick}:exp", 0)
 	@bot.database.set("user:#{m.user.nick}:level", 1)
-	@bot.database.set("user:#{m.user.nick}:time", Time.now)
-	@bot.database.set("user:#{m.user.nick}:questtime", Time.now)
-	@bot.database.set("user:#{m.user.nick}:quests", 0)
-	@bot.database.set("user:#{m.user.nick}:fights", 0)
 	starterweapon = WEAPONS[1][randweapon]
 	starterarmor = ARMOR[1][randarmor]
 	m.reply "-> New character created for 02#{m.user.nick}. Starting with [06#{starterweapon['name']} | DMG: 131-#{starterweapon['damage']} | ELE: 14#{starterweapon['element']} ] and [06#{starterarmor['name']} | ARM: 050-#{starterarmor['armor']} | ELE: 14#{starterarmor['element']}]"
   end
-  
+
   def attack()
-	
 	chan = @bot.channels.sample
-		
 	channel = Channel(chan)
 
-		usernameA = ''
-		while usernameA == 'FightBot' || usernameA == ''
-			usernameA = chan.users.keys.sample.nick
-		end
-			
-		usernameB = ''
-		while usernameB == 'FightBot' || usernameB == '' || usernameA == usernameB
-			usernameB = chan.users.keys.sample.nick
-		end		
-	channel.msg "----------------------------------------------------"
+	#Loop till we find a valid user
+	usernameA = ''
+	while usernameA == 'FightBot' || usernameA == ''
+		usernameA = chan.users.keys.sample.nick
+	end
+	
+	#Loop till we find a valid user to fight against userA.
+	usernameB = ''
+	while usernameB == 'FightBot' || usernameB == '' || usernameA == usernameB
+		usernameB = chan.users.keys.sample.nick
+	end
 
-	if get_level(usernameB).to_i >= 1
-		defender_has_account = true
-	else
-		defender_has_account = false
-	end
-	
-	if get_level(usernameA).to_i >= 1
-		attacker_has_account = true
-	else
-		attacker_has_account = false
-	end
-	
-	calculate_date(usernameA)
-	
-	if usernameA != usernameB
-		if get_fights(usernameA).to_i < MAX_FIGHTS		
-			
+	#We don't want to do anything if any of the users didnt get set.
+	if usernameA != '' && usernameB != ''
+
+		channel.msg "----------------------------------------------------"
+		
+		if get_level(usernameA).to_i >= 1
+			attacker_has_account = true
+		else
+			attacker_has_account = false
+		end
+
+		if get_level(usernameB).to_i >= 1
+			defender_has_account = true
+		else
+			defender_has_account = false
+		end
+		
+		#Check to make sure you're not trying to attack yourself.
+		if usernameA != usernameB
+
+			#Check to see if the users have accounts.
 			if attacker_has_account == true and defender_has_account == true
-				save_fights(usernameA, get_fights(usernameA).to_i + 1)
 				
 				attacker_level = get_level(usernameA).to_i
 				defender_level = get_level(usernameB).to_i
@@ -267,8 +195,8 @@ class Fight
 				attacker_armor = ARMOR[attacker_level][get_armor(usernameA).to_i]
 				defender_armor = ARMOR[defender_level][get_armor(usernameB).to_i]
 				
-				attacker_damage = rand(attacker_weapon['damage']) + 1
-				defender_damage = rand(defender_weapon['damage']) + 1
+				attacker_damage = rand(attacker_weapon['damage']) + MINIMUM_DAMAGE
+				defender_damage = rand(defender_weapon['damage']) + MINIMUM_DAMAGE
 				
 				attacker_armor = rand(attacker_armor['armor'])
 				defender_armor = rand(defender_armor['armor'])
@@ -284,10 +212,11 @@ class Fight
 					defender_damage_done = 0
 				end
 				
-				
 				channel.msg "-> 02#{usernameA} [07#{get_level(usernameA)}] attacks 04#{usernameB} with their 06#{attacker_weapon['name']} [DMG:02#{attacker_damage}-04#{defender_armor}:ARM] = 02#{attacker_damage_done} Damage Inflicted"
 				channel.msg "-> 04#{usernameB} [07#{get_level(usernameB)}] counters 02#{usernameA} with their 06#{defender_weapon['name']} [DMG:04#{defender_damage}-02#{attacker_armor}:ARM] = 04#{defender_damage_done} Damage Inflicted"
 				
+				#Here we start to calculate the battle results
+				#Check to see if the attacker did more damage than the defender and sets EXP.
 				if attacker_damage_done > defender_damage_done
 					base_exp = rand(MAX_EXPERIENCE_PER_WIN)+1
 					if get_level(usernameB).to_i > get_level(usernameA).to_i
@@ -299,9 +228,9 @@ class Fight
 					channel.msg "-> 02#{usernameA}[07#{get_level(usernameA)}][03#{get_exp(usernameA)}/03#{get_level(usernameA).to_i*LEVEL_FACTOR}] beats 04#{usernameB} [07#{get_level(usernameB)}][03#{get_exp(usernameB)}/03#{get_level(usernameB).to_i*LEVEL_FACTOR}] and gains 03#{base_exp}+03#{bonus_exp}=03#{earned_exp} EXP."
 					save_exp(usernameA, earned_exp)
 					calculate_level(usernameA)
-					
 				end
 				
+				#Defender Wins
 				if attacker_damage_done < defender_damage_done
 					base_exp = rand(MAX_EXPERIENCE_PER_WIN)+1
 					if get_level(usernameA).to_i > get_level(usernameB).to_i
@@ -315,6 +244,7 @@ class Fight
 					calculate_level(usernameB)
 				end
 				
+				#Tie
 				if attacker_damage_done == defender_damage_done
 					earned_exp = rand(MAX_EXPERIENCE_PER_TIE)+1
 					channel.msg "-> 02#{usernameA}[07#{get_level(usernameA)}][03#{get_exp(usernameA)}/03#{get_level(usernameA).to_i*LEVEL_FACTOR}] ties 04#{usernameB}[07#{get_level(usernameB)}][03#{get_exp(usernameB)}/03#{get_level(usernameB).to_i*LEVEL_FACTOR}] and both gain 03#{earned_exp} EXP."
@@ -322,10 +252,9 @@ class Fight
 					save_exp(usernameB, earned_exp)
 					calculate_level(usernameA)
 					calculate_level(usernameB)
-					
 				end
 
-	channel.msg "----------------------------------------------------"
+				channel.msg "----------------------------------------------------"
 
 			else
 				if attacker_has_account == true and defender_has_account == false
@@ -337,13 +266,14 @@ class Fight
 				if attacker_has_account == false and defender_has_account == false
 					@bot.msg(usernameA,"04-> You and #{usernameB} have not setup characters.")
 				end
-			end
+			end #End Account Check
 		else
-			@bot.msg(usernameA,"04-> You can only fight 02#{MAX_FIGHTS}04 times in 02#{TIME_BETWEEN_MAX_FIGHTS}04 seconds, you've got 03#{calculate_time_left(usernameA).to_i}04 seconds left.")
-		end
-	else
-		@bot.msg(usernameA,"04-> You're trying to attack yourself? 5 EXP MINUS!")
-		save_exp(usernameA,-5)
-	end
+			@bot.msg(usernameA,"04-> You're trying to attack yourself? 5 EXP MINUS!")
+			save_exp(usernameA,-5)
+		end #End Self Attack Check
+
+	end #End Null Users Check.
+
   end
-end
+
+end #End Class
