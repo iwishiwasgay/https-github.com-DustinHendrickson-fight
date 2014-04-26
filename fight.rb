@@ -41,8 +41,10 @@ def fight(m, command, param)
 		  info m, param
 		when 'create'
 		  create m
+		when 'ai'
+			fightai m
 		when 'help'
-		  help m 
+		  help m
 	end
 end
 
@@ -118,10 +120,10 @@ def calculate_level(param)
 		save_armor(param, randarmor)
 		new_weapon = WEAPONS[new_level][randweapon]
 		new_armor = ARMOR[new_level][randarmor]
-		
+
 		chan = @bot.channels.sample
 		channel = Channel(chan)
-		
+
 		channel.msg "----------------------------------------------------"
 
 		channel.msg "-> 02#{param} reaches level 07#{get_level(param)}! Equips a new [06#{new_weapon['name']} | DMG: 131-#{new_weapon['damage']} | ELE: 14#{new_weapon['element']}] and [06#{new_armor['name']} | ARM: 050-#{new_armor['armor']} | ELE: 14#{new_armor['element']}]"
@@ -147,20 +149,61 @@ def create(m)
 	m.reply "-> New character created for 02#{m.user.nick}. Starting with [06#{starterweapon['name']} | DMG: 131-#{starterweapon['damage']} | ELE: 14#{starterweapon['element']} ] and [06#{starterarmor['name']} | ARM: 050-#{starterarmor['armor']} | ELE: 14#{starterarmor['element']}]"
 end
 
-def attack()
+#Create a new AI character.
+def createai(level)
+	randweapon = rand(5)
+	randarmor = rand(5)
+	save_weapon("AI", randweapon)
+	save_armor("AI", randarmor)
+	reset_exp("AI")
+	save_level("AI", level)
+end
+
+def fightai(m)
+	attack(:a => m, :b => "ai")
+end
+
+def attack( options={} )
 	chan = @bot.channels.sample
 	channel = Channel(chan)
 
-	#Loop till we find a valid user
-	usernameA = ''
-	while usernameA == 'FightBot' || usernameA == ''
-		usernameA = chan.users.keys.sample.nick
-	end
+	#Setup default options if ai fight was passed to the function.
+	if options[:b] == "ai"
 
-	#Loop till we find a valid user to fight against userA.
-	usernameB = ''
-	while usernameB == 'FightBot' || usernameB == '' || usernameA == usernameB
-		usernameB = chan.users.keys.sample.nick
+		usernameA = options[:a].user.nick
+		usernameB = "AI"
+		createai(get_level(usernameA).to_i)
+	else
+		#Loop till we find a valid user
+		usernameA = ''
+		i = 0
+		while usernameA == 'FightBot' || usernameA == ''
+			usernameA = chan.users.keys.sample.nick
+			if get_level(usernameA).to_i <= 0
+				usernameA = ''
+			end
+			i +=1
+			if i >= 50
+				usernameA = ''
+				break
+			end
+		end
+
+		#Loop till we find a valid user to fight against userA.
+		usernameB = ''
+		i = 0
+		while usernameB == 'FightBot' || usernameB == '' || usernameA == usernameB || get_level(usernameB).to_i <= 0
+			usernameB = chan.users.keys.sample.nick
+			if get_level(usernameB).to_i <= 0
+				usernameB = ''
+			end
+			i +=1
+			if i >= 50
+				usernameB = ''
+				break
+			end
+		end
+
 	end
 
 	#We don't want to do anything if any of the users didnt get set.
@@ -168,27 +211,27 @@ def attack()
 
 			attacker_level = get_level(usernameA).to_i
 			defender_level = get_level(usernameB).to_i
-			
+
 			attacker_weapon = WEAPONS[attacker_level][get_weapon(usernameA).to_i]
 			defender_weapon = WEAPONS[defender_level][get_weapon(usernameB).to_i]
-			
+
 			attacker_armor = ARMOR[attacker_level][get_armor(usernameA).to_i]
 			defender_armor = ARMOR[defender_level][get_armor(usernameB).to_i]
-			
+
 			attacker_damage = rand(attacker_weapon['damage']) + MINIMUM_DAMAGE
 			defender_damage = rand(defender_weapon['damage']) + MINIMUM_DAMAGE
-			
+
 			attacker_armor = rand(attacker_armor['armor'])
 			defender_armor = rand(defender_armor['armor'])
-			
+
 			attacker_damage_done = attacker_damage - defender_armor
 			defender_damage_done = defender_damage - attacker_armor
-			
+
 			#Make sure we can do math on the numbers.
 			if attacker_damage_done < 0
 				attacker_damage_done = 0
 			end
-			
+
 			if defender_damage_done < 0
 				defender_damage_done = 0
 			end
@@ -212,7 +255,7 @@ def attack()
 				save_exp(usernameA, earned_exp)
 				calculate_level(usernameA)
 			end
-			
+
 			#Defender Wins
 			if attacker_damage_done < defender_damage_done
 				base_exp = rand(MAX_EXPERIENCE_PER_WIN)+1
@@ -226,7 +269,7 @@ def attack()
 				save_exp(usernameB, earned_exp)
 				calculate_level(usernameB)
 			end
-			
+
 			#Tie
 			if attacker_damage_done == defender_damage_done
 				earned_exp = rand(MAX_EXPERIENCE_PER_TIE)+1
@@ -243,4 +286,4 @@ def attack()
 
 end #End Of Attack
 
-end #End Class
+#end #End Class
