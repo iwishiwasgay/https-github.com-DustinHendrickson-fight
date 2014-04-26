@@ -159,7 +159,7 @@ weapons:
     - name: 'Whizzed on Piece of Jagged Glass'
       damage: 11
       element: 'Life'
- 10:
+  10:
     - name: 'Composite Mace'
       damage: 13
       element: 'None'
@@ -175,7 +175,7 @@ weapons:
     - name: 'Old Paper Bag of Doom'
       damage: 12
       element: 'Life'
- 11:
+  11:
     - name: 'Bronze Morning Star'
       damage: 14
       element: 'None'
@@ -191,7 +191,7 @@ weapons:
     - name: 'Old NASTY Paper Bag of Doom'
       damage: 13
       element: 'Life'
- 12:
+  12:
     - name: 'Iron Morning Star'
       damage: 15
       element: 'None'
@@ -207,7 +207,7 @@ weapons:
     - name: 'Vagrant''s Dirty Dagger'
       damage: 14
       element: 'Life'
- 13:
+  13:
     - name: 'Steel Morning Star'
       damage: 16
       element: 'None'
@@ -223,7 +223,7 @@ weapons:
     - name: 'Lowlife''s Dagger of Not Washedness'
       damage: 15
       element: 'Life'
- 14:
+  14:
     - name: 'Composite Morning Star'
       damage: 17
       element: 'None'
@@ -239,7 +239,7 @@ weapons:
     - name: 'Shoplifter''s Pointy Stick (POISONOUS!)'
       damage: 16
       element: 'Life'
- 15:
+  15:
     - name: 'Rusted Over Kunai Knife'
       damage: 18
       element: 'None'
@@ -255,7 +255,7 @@ weapons:
     - name: 'Pickpocket''s Pocket Knife (WITH POISON!)'
       damage: 17
       element: 'Life'
- 16:
+  16:
     - name: 'Rusty Kunai Knife'
       damage: 19
       element: 'None'
@@ -271,7 +271,7 @@ weapons:
     - name: 'Thief''s Dull Blade (OH NO IT''S POISONED!)'
       damage: 18
       element: 'Life'
- 17:
+  17:
     - name: 'Dull Kunai Knife'
       damage: 20
       element: 'None'
@@ -287,7 +287,7 @@ weapons:
     - name: 'Mugger''s Mean Knife (... POISON!)'
       damage: 19
       element: 'Life'
- 18:
+  18:
     - name: 'Kunai Knife'
       damage: 21
       element: 'None'
@@ -303,7 +303,7 @@ weapons:
     - name: 'Thug''s Blade of Evil Poisonedness'
       damage: 20
       element: 'Life'
- 19:
+  19:
     - name: 'Solid Steel Kunai Knife'
       damage: 22
       element: 'None'
@@ -319,7 +319,7 @@ weapons:
     - name: 'Thief''s Lesser Dagger of Stabbiness (POISONED!!!)'
       damage: 21
       element: 'Life'
- 20:
+  20:
     - name: 'Kunai Knife with Cheese'
       damage: 23
       element: 'None'
