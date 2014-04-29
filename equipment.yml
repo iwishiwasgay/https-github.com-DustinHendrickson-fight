@@ -1,0 +1,659 @@
+weapons:
+  1:
+    - name: 'Broken Nerf Sword'
+      damage: 3
+      element: 'None'
+    - name: 'Nerf Sword'
+      damage: 4
+      element: 'None'
+    - name: 'Broken Fire Staff'
+      damage: 2
+      element: 'Fire'
+    - name: 'Rusted Water Wand'
+      damage: 2
+      element: 'Water'
+    - name: 'Gartner Snake''s Fang Dagger'
+      damage: 2
+      element: 'Life'
+  2:
+    - name: 'Broken Halloween Pirate Sword'
+      damage: 4
+      element: 'None'
+    - name: 'Halloween Pirate Sword'
+      damage: 5
+      element: 'None'
+    - name: 'Worn Fire Staff'
+      damage: 3
+      element: 'Fire'
+    - name: 'Dull Water Wand'
+      damage: 3
+      element: 'Water'
+    - name: 'Bull Snake''s Fang Dagger'
+      damage: 3
+      element: 'Life'
+  3:
+    - name: 'Rusted Short Sword'
+      damage: 5
+      element: 'None'
+    - name: 'Rusted Long Sword'
+      damage: 6
+      element: 'None'
+    - name: 'Lesser Fire Staff'
+      damage: 4
+      element: 'Fire'
+    - name: 'Lesser Water Wand'
+      damage: 4
+      element: 'Water'
+    - name: 'Rattlesnake''s Fang Dagger'
+      damage: 4
+      element: 'Life'
+  4:
+    - name: 'Dull Short Sword'
+      damage: 6
+      element: 'None'
+    - name: 'Dull Long Sword'
+      damage: 7
+      element: 'None'
+    - name: 'Fire Staff'
+      damage: 5
+      element: 'Fire'
+    - name: 'Water Wand'
+      damage: 5
+      element: 'Water'
+    - name: 'Cobra''s Fang Dagger'
+      damage: 5
+      element: 'Life'
+  5:
+    - name: 'Bronze Short Sword'
+      damage: 7
+      element: 'None'
+    - name: 'Bronze Long Sword'
+      damage: 8
+      element: 'None'
+    - name: 'Major Fire Staff'
+      damage: 6
+      element: 'Fire'
+    - name: 'Major Water Wand'
+      damage: 6
+      element: 'Water'
+    - name: 'Anaconda''s Fang Dagger'
+      damage: 6
+      element: 'Life'
+  6:
+    - name: 'Iron Short Sword'
+      damage: 8
+      element: 'None'
+    - name: 'Iron Long Sword'
+      damage: 9
+      element: 'None'
+    - name: 'Greater Fire Staff'
+      damage: 7
+      element: 'Fire'
+    - name: 'Greater Water Wand'
+      damage: 7
+      element: 'Water'
+    - name: 'Degenerate''s Dagger'
+      damage: 7
+      element: 'Life'
+  7:
+    - name: 'Steel Short Sword'
+      damage: 9
+      element: 'None'
+    - name: 'Steel Long Sword'
+      damage: 10
+      element: 'None'
+    - name: 'Greatest Fire Staff of All Time'
+      damage: 8
+      element: 'Fire'
+    - name: 'Outrageously Good Water Wand'
+      damage: 8
+      element: 'Water'
+    - name: 'Bum''s Dagger'
+      damage: 8
+      element: 'Life'
+  8:
+    - name: 'Bronze Mace'
+      damage: 10
+      element: 'None'
+    - name: 'Bronze Great Sword'
+      damage: 11
+      element: 'None'
+    - name: 'Greatest Fire Staff of All Time'
+      damage: 9
+      element: 'Fire'
+    - name: 'Outrageously Good Water Wand'
+      damage: 9
+      element: 'Water'
+    - name: 'Bum''s Dagger'
+      damage: 9
+      element: 'Life'
+  8:
+    - name: 'Iron Mace'
+      damage: 11
+      element: 'None'
+    - name: 'Iron Great Sword'
+      damage: 12
+      element: 'None'
+    - name: 'Greatest Fire Staff of All Time v2.0'
+      damage: 10
+      element: 'Fire'
+    - name: 'Outrageously Gooder Water Wand'
+      damage: 10
+      element: 'Water'
+    - name: 'Bearded Bum''s Dagger of Uncleanliness'
+      damage: 10
+      element: 'Life'
+  9:
+    - name: 'Steel Mace'
+      damage: 12
+      element: 'None'
+    - name: 'Steel Great Sword'
+      damage: 13
+      element: 'None'
+    - name: 'Sword of the Birthday Candle'
+      damage: 11
+      element: 'Fire'
+    - name: 'Bubble Blower of Pinkness'
+      damage: 11
+      element: 'Water'
+    - name: 'Whizzed on Piece of Jagged Glass'
+      damage: 11
+      element: 'Life'
+  10:
+    - name: 'Composite Mace'
+      damage: 13
+      element: 'None'
+    - name: 'Composite Great Sword'
+      damage: 14
+      element: 'None'
+    - name: 'Sword of the Dinner Candle'
+      damage: 12
+      element: 'Fire'
+    - name: 'Bubble Blower of Purpleness'
+      damage: 12
+      element: 'Water'
+    - name: 'Old Paper Bag of Doom'
+      damage: 12
+      element: 'Life'
+  11:
+    - name: 'Bronze Morning Star'
+      damage: 14
+      element: 'None'
+    - name: 'Bronze Greater Sword'
+      damage: 15
+      element: 'None'
+    - name: 'Sword of the Candle Lighter Flame'
+      damage: 13
+      element: 'Fire'
+    - name: 'Bubble Blower of Yellowness'
+      damage: 13
+      element: 'Water'
+    - name: 'Old NASTY Paper Bag of Doom'
+      damage: 13
+      element: 'Life'
+  12:
+    - name: 'Iron Morning Star'
+      damage: 15
+      element: 'None'
+    - name: 'Iron Greater Sword'
+      damage: 16
+      element: 'None'
+    - name: 'Sword of the Open Range Burner Flame'
+      damage: 14
+      element: 'Fire'
+    - name: 'Scimitar of the Puddles'
+      damage: 14
+      element: 'Water'
+    - name: 'Vagrant''s Dirty Dagger'
+      damage: 14
+      element: 'Life'
+  13:
+    - name: 'Steel Morning Star'
+      damage: 16
+      element: 'None'
+    - name: 'Steel Greater Sword'
+      damage: 17
+      element: 'None'
+    - name: 'Sword of Hotness'
+      damage: 15
+      element: 'Fire'
+    - name: 'Scimitar of the Gentle Brooks'
+      damage: 15
+      element: 'Water'
+    - name: 'Lowlife''s Dagger of Not Washedness'
+      damage: 15
+      element: 'Life'
+  14:
+    - name: 'Composite Morning Star'
+      damage: 17
+      element: 'None'
+    - name: 'Composite Greater Sword'
+      damage: 18
+      element: 'None'
+    - name: 'Sword of the Heated Seat Cushion'
+      damage: 16
+      element: 'Fire'
+    - name: 'Scimitar of the Yellow Streams'
+      damage: 16
+      element: 'Water'
+    - name: 'Shoplifter''s Pointy Stick (POISONOUS!)'
+      damage: 16
+      element: 'Life'
+  15:
+    - name: 'Rusted Over Kunai Knife'
+      damage: 18
+      element: 'None'
+    - name: 'Really Weak Zanpakuto'
+      damage: 19
+      element: 'None'
+    - name: 'Sword with a built-in hand warmer'
+      damage: 17
+      element: 'Fire'
+    - name: 'Scimitar of the Excess Water from Some Dude''s Carwash'
+      damage: 17
+      element: 'Water'
+    - name: 'Pickpocket''s Pocket Knife (WITH POISON!)'
+      damage: 17
+      element: 'Life'
+  16:
+    - name: 'Rusty Kunai Knife'
+      damage: 19
+      element: 'None'
+    - name: 'Weak Zanpakuto'
+      damage: 20
+      element: 'None'
+    - name: 'Sword of Heat'
+      damage: 18
+      element: 'Fire'
+    - name: 'Scimitar of the Happy Streams'
+      damage: 18
+      element: 'Water'
+    - name: 'Thief''s Dull Blade (OH NO IT''S POISONED!)'
+      damage: 18
+      element: 'Life'
+  17:
+    - name: 'Dull Kunai Knife'
+      damage: 20
+      element: 'None'
+    - name: 'Half-Weak Zanpakuto'
+      damage: 21
+      element: 'None'
+    - name: 'Sword of Cindering'
+      damage: 19
+      element: 'Fire'
+    - name: 'Scimitar of the Indifferent Streams'
+      damage: 19
+      element: 'Water'
+    - name: 'Mugger''s Mean Knife (... POISON!)'
+      damage: 19
+      element: 'Life'
+  18:
+    - name: 'Kunai Knife'
+      damage: 21
+      element: 'None'
+    - name: 'One Quarter Weak Zanpakuto'
+      damage: 22
+      element: 'None'
+    - name: 'Sword of Burning'
+      damage: 20
+      element: 'Fire'
+    - name: 'Scimitar of the Intolerant Streams'
+      damage: 20
+      element: 'Water'
+    - name: 'Thug''s Blade of Evil Poisonedness'
+      damage: 20
+      element: 'Life'
+  19:
+    - name: 'Solid Steel Kunai Knife'
+      damage: 22
+      element: 'None'
+    - name: 'Zanpakuto'
+      damage: 23
+      element: 'None'
+    - name: 'Sword of Flames'
+      damage: 21
+      element: 'Fire'
+    - name: 'Scimitar of the Rude Streams'
+      damage: 21
+      element: 'Water'
+    - name: 'Thief''s Lesser Dagger of Stabbiness (POISONED!!!)'
+      damage: 21
+      element: 'Life'
+  20:
+    - name: 'Kunai Knife with Cheese'
+      damage: 23
+      element: 'None'
+    - name: 'Sweet Zanpakuto'
+      damage: 24
+      element: 'None'
+    - name: 'Sword of the Fiery Hells'
+      damage: 22
+      element: 'Fire'
+    - name: 'Scimitar of the Racial Stereotyping Streams'
+      damage: 22
+      element: 'Water'
+    - name: 'Thief''s Poisoned Knife'
+      damage: 22
+      element: 'Life'
+
+armor:
+  1:
+    - name: 'Cloth'
+      armor: 1
+      element: 'None'
+    - name: 'Robes'
+      armor: 2
+      element: 'None'
+    - name: 'Mystic Flame Robes'
+      armor: 1
+      element: 'Fire'
+    - name: 'Mystic Water Robes'
+      armor: 1
+      element: 'Water'
+    - name: 'Mystic Life Robes'
+      armor: 1
+      element: 'Life'
+  2:
+    - name: 'Spun Cloth'
+      armor: 2
+      element: 'None'
+    - name: 'Leather'
+      armor: 3
+      element: 'None'
+    - name: 'Fire Gauntlet'
+      armor: 2
+      element: 'Fire'
+    - name: 'Ice Helmet'
+      armor: 2
+      element: 'Water'
+    - name: 'Cape of Leaves'
+      armor: 2
+      element: 'Life'
+  3:
+    - name: 'Hardened Leather'
+      armor: 4
+      element: 'None'
+    - name: 'Buckler'
+      armor: 5
+      element: 'None'
+    - name: 'Lava Boots'
+      armor: 4
+      element: 'Fire'
+    - name: 'Bracer of Water'
+      armor: 4
+      element: 'Water'
+    - name: 'Root Shield'
+      armor: 4
+      element: 'Life'
+  4:
+    - name: 'Chainmail'
+      armor: 5
+      element: 'None'
+    - name: 'Great Shield'
+      armor: 6
+      element: 'None'
+    - name: 'Heat Helm'
+      armor: 5
+      element: 'Fire'
+    - name: 'Snowflake Cowl'
+      armor: 5
+      element: 'Water'
+    - name: 'Corrosive Cape'
+      armor: 5
+      element: 'Life'
+  5:
+    - name: 'Plate'
+      armor: 6
+      element: 'None'
+    - name: 'Tower Shield'
+      armor: 7
+      element: 'None'
+    - name: 'Tempered Plate'
+      armor: 6
+      element: 'Fire'
+    - name: 'Hydrating Boots'
+      armor: 6
+      element: 'Water'
+    - name: 'Acidic Paudlrons'
+      armor: 6
+      element: 'Life'
+  6:
+    - name: 'Titanium Plate'
+      armor: 7
+      element: 'None'
+    - name: 'Plated Cape'
+      armor: 8
+      element: 'None'
+    - name: 'Dragon Skin'
+      armor: 7
+      element: 'Fire'
+    - name: 'Frozen Shield'
+      armor: 7
+      element: 'Water'
+    - name: 'Stormy Boots'
+      armor: 7
+      element: 'Life'
+  7:
+    - name: 'Forged Titanium'
+      armor: 8
+      element: 'None'
+    - name: 'Studded-Leather Cape'
+      armor: 9
+      element: 'None'
+    - name: 'Hellspawn Skin'
+      armor: 8
+      element: 'Fire'
+    - name: 'Glacial Buckler'
+      armor: 8
+      element: 'Water'
+    - name: 'Helm of Solitude'
+      armor: 8
+      element: 'Life'
+  8:
+    - name: 'Turtle Shell Hat'
+      armor: 9
+      element: 'None'
+    - name: 'Boots of Nothing'
+      armor: 10
+      element: 'None'
+    - name: 'Red Hat'
+      armor: 9
+      element: 'Fire'
+    - name: 'Blue Hat'
+      armor: 9
+      element: 'Water'
+    - name: 'Green Hat'
+      armor: 9
+      element: 'Life'
+  9:
+    - name: 'Woven Armor'
+      armor: 10
+      element: 'None'
+    - name: 'Bracers and Belt'
+      armor: 11
+      element: 'None'
+    - name: 'Woven Dragon-Scales'
+      armor: 10
+      element: 'Fire'
+    - name: 'Ice Block Chestpiece'
+      armor: 10
+      element: 'Water'
+    - name: 'Woven Vine Chest'
+      armor: 10
+      element: 'Life'
+  10:
+    - name: 'Stinson''s Suit'
+      armor: 11
+      element: 'None'
+    - name: 'Tower Shield'
+      armor: 12
+      element: 'None'
+    - name: 'Ember Armbands'
+      armor: 11
+      element: 'Fire'
+    - name: 'Frozen Paulders'
+      armor: 11
+      element: 'Water'
+    - name: 'Bark Chestpiece'
+      armor: 11
+      element: 'Life'
+  11:
+    - name: 'Paper Bag'
+      armor: 12
+      element: 'None'
+    - name: 'Viking Helmet'
+      armor: 13
+      element: 'None'
+    - name: 'Dragon Head Hat'
+      armor: 12
+      element: 'Fire'
+    - name: 'Glacial Buckler'
+      armor: 12
+      element: 'Water'
+    - name: 'Nature''s Circlet'
+      armor: 12
+      element: 'Life'
+  12:
+    - name: 'Pirate Hat'
+      armor: 13
+      element: 'None'
+    - name: 'Nerf Vest'
+      armor: 14
+      element: 'None'
+    - name: 'Lava Cowl'
+      armor: 13
+      element: 'Fire'
+    - name: 'Ocean''s Shell Shield'
+      armor: 13
+      element: 'Water'
+    - name: 'Pillbug Shell Shield'
+      armor: 13
+      element: 'Life'
+  13:
+    - name: 'Viking Helm'
+      armor: 14
+      element: 'None'
+    - name: 'Trash Lid'
+      armor: 15
+      element: 'None'
+    - name: 'Wildfire Leg Plates'
+      armor: 14
+      element: 'Fire'
+    - name: 'Cape of Storms'
+      armor: 14
+      element: 'Water'
+    - name: 'Scorpion Armor'
+      armor: 14
+      element: 'Life'
+  14:
+    - name: 'Wizard''s Robe'
+      armor: 15
+      element: 'None'
+    - name: 'Skeleton Armor'
+      armor: 16
+      element: 'None'
+    - name: 'Magma Loin Cloth'
+      armor: 15
+      element: 'Fire'
+    - name: 'Rain Hat'
+      armor: 15
+      element: 'Water'
+    - name: 'Poisoned Pauldrons'
+      armor: 15
+      element: 'Life'
+  15:
+    - name: 'Bane''s Mask'
+      armor: 16
+      element: 'None'
+    - name: 'Goblin Hide Boots'
+      armor: 17
+      element: 'None'
+    - name: 'Dragon Scale Cape'
+      armor: 16
+      element: 'Fire'
+    - name: 'Leviathan Skin'
+      armor: 16
+      element: 'Water'
+    - name: 'Bark Paulderons'
+      armor: 16
+      element: 'Life'
+  16:
+    - name: 'Human Hide Armor'
+      armor: 17
+      element: 'None'
+    - name: 'Bear Hat'
+      armor: 18
+      element: 'None'
+    - name: 'Ragnaros Shield'
+      armor: 17
+      element: 'Fire'
+    - name: 'Barnacle Armor'
+      armor: 17
+      element: 'Water'
+    - name: 'Venom Coated Leather'
+      armor: 17
+      element: 'Life'
+  17:
+    - name: 'Bone Bracer'
+      armor: 18
+      element: 'None'
+    - name: 'Folded Iron Hat'
+      armor: 19
+      element: 'None'
+    - name: 'Firefly Cape'
+      armor: 18
+      element: 'Fire'
+    - name: 'Serenity Boots'
+      armor: 18
+      element: 'Water'
+    - name: 'Toxic Armor'
+      armor: 18
+      element: 'Life'
+  18:
+    - name: 'Spiked Collar'
+      armor: 19
+      element: 'None'
+    - name: 'Spiked Armor'
+      armor: 20
+      element: 'None'
+    - name: 'Bracer of Flames'
+      armor: 19
+      element: 'Fire'
+    - name: 'Rain Leggings'
+      armor: 19
+      element: 'Water'
+    - name: 'Venom Belt'
+      armor: 19
+      element: 'Life'
+  19:
+    - name: 'Dull Mirror Helm'
+      armor: 20
+      element: 'None'
+    - name: 'Mirrored Boots'
+      armor: 21
+      element: 'None'
+    - name: 'Darkflame Hat'
+      armor: 20
+      element: 'Fire'
+    - name: 'Moist Bracer'
+      armor: 20
+      element: 'Water'
+    - name: 'Snake Skin Boots'
+      armor: 20
+      element: 'Life'
+  20:
+    - name: 'Dull Mirror Helm'
+      armor: 20
+      element: 'None'
+    - name: 'Mirrored Boots'
+      armor: 21
+      element: 'None'
+    - name: 'Darkflame Hat'
+      armor: 20
+      element: 'Fire'
+    - name: 'Moist Bracer'
+      armor: 20
+      element: 'Water'
+    - name: 'Snake Skin Boots'
+      armor: 20
+      element: 'Life'
