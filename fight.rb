@@ -6,7 +6,7 @@ require 'yaml'
 #dustin.hendrickson@gmail.com
 
 
-class fight
+class Fight
 include Cinch::Plugin
 prefix "@"
 
@@ -171,7 +171,6 @@ def attack( options={} )
 
 	#Setup default options if ai fight was passed to the function.
 	if options[:b] == "ai"
-
 		usernameA = options[:a].user.nick
 		usernameB = "AI"
 		createai(get_level(usernameA).to_i)
@@ -205,7 +204,6 @@ def attack( options={} )
 				break
 			end
 		end
-
 	end
 
 	#We don't want to do anything if any of the users didnt get set.
@@ -234,134 +232,135 @@ def attack( options={} )
 			#============================================================================
 			#Element Definitions - Weapons
 			#Attacker +
-			if attacker_weapon['element'] == 'Life' && defender_armor['element'] === 'Water'
+			
+			if attacker_weapon['element'] == 'Life' && defender_armor['element'] == 'Water'
 				attacker_damage = attacker_damage + ELEMENT_BONUS
-				attacker_weapon_element_bonus = "+ 11#{ELEMENT_BONUS}"
+				attacker_weapon_element_bonus = "+11#{ELEMENT_BONUS}"
 			end
 
 			if attacker_weapon['element'] == 'Water' && defender_armor['element'] == 'Fire'
 				attacker_damage = attacker_damage + ELEMENT_BONUS
-				attacker_weapon_element_bonus = "+ 04#{ELEMENT_BONUS}"
+				attacker_weapon_element_bonus = "+04#{ELEMENT_BONUS}"
 			end
 
 			if attacker_weapon['element'] == 'Fire' && defender_armor['element'] == 'Life'
 				attacker_damage = attacker_damage + ELEMENT_BONUS
-				attacker_weapon_element_bonus = "+ 03#{ELEMENT_BONUS}"
+				attacker_weapon_element_bonus = "+03#{ELEMENT_BONUS}"
 			end
 
 			#Attacker -
 			if attacker_weapon['element'] == 'Water' && defender_armor['element'] == 'Life'
 				attacker_damage = attacker_damage - ELEMENT_BONUS
-				attacker_weapon_element_bonus = "- 11#{ELEMENT_BONUS}"
+				attacker_weapon_element_bonus = "-11#{ELEMENT_BONUS}"
 			end
 
 			if attacker_weapon['element'] == 'Fire' && defender_armor['element'] == 'Water'
 				attacker_damage = attacker_damage - ELEMENT_BONUS
-				attacker_weapon_element_bonus = "- 04#{ELEMENT_BONUS}"
+				attacker_weapon_element_bonus = "-04#{ELEMENT_BONUS}"
 			end
 
 			if attacker_weapon['element'] == 'Life' && defender_armor['element'] == 'Fire'
 				attacker_damage = attacker_damage - ELEMENT_BONUS
-				attacker_weapon_element_bonus = "- 03#{ELEMENT_BONUS}"
+				attacker_weapon_element_bonus = "-03#{ELEMENT_BONUS}"
 			end
 
 			#Defender +
 			if defender_weapon['element'] == 'Life' && attacker_armor['element'] == 'Water'
 				defender_damage = defender_damage + ELEMENT_BONUS
-				defender_weapon_element_bonus = "+ 11#{ELEMENT_BONUS}"
+				defender_weapon_element_bonus = "+11#{ELEMENT_BONUS}"
 			end
 
 			if defender_weapon['element'] == 'Water' && attacker_armor['element'] == 'Fire'
 				defender_damage = defender_damage + ELEMENT_BONUS
-				defender_weapon_element_bonus = "+ 04#{ELEMENT_BONUS}"
+				defender_weapon_element_bonus = "+04#{ELEMENT_BONUS}"
 			end
 
 			if defender_weapon['element'] == 'Fire' && attacker_armor['element'] == 'Life'
 				defender_damage = defender_damage + ELEMENT_BONUS
-				defender_weapon_element_bonus = "+ 03#{ELEMENT_BONUS}"
+				defender_weapon_element_bonus = "+03#{ELEMENT_BONUS}"
 			end
 
 			#Defender -
 			if defender_weapon['element'] == 'Water' && attacker_armor['element'] == 'Life'
 				defender_damage = defender_damage - ELEMENT_BONUS
-				defender_weapon_element_bonus = "- 11#{ELEMENT_BONUS}"
+				defender_weapon_element_bonus = "-11#{ELEMENT_BONUS}"
 			end
 
 			if defender_weapon['element'] == 'Fire' && attacker_armor['element'] == 'Water'
 				defender_damage = defender_damage - ELEMENT_BONUS
-				defender_weapon_element_bonus = "- 04#{ELEMENT_BONUS}"
+				defender_weapon_element_bonus = "-04#{ELEMENT_BONUS}"
 			end
 
 			if defender_weapon['element'] == 'Life' && attacker_armor['element'] == 'Water'
 				defender_damage = defender_damage - ELEMENT_BONUS
-				defender_weapon_element_bonus = "- 03#{ELEMENT_BONUS}"
+				defender_weapon_element_bonus = "-03#{ELEMENT_BONUS}"
 			end
 
 			#Element Definitions - Armor
 			#Attacker +
 			if attacker_armor['element'] == 'Life' && defender_weapon['element'] == 'Water'
 				attacker_armor = attacker_armor + ELEMENT_BONUS
-				attacker_armor_element_bonus = "+ 11#{ELEMENT_BONUS}"
+				attacker_armor_element_bonus = "+11#{ELEMENT_BONUS}"
 			end
 
 			if attacker_armor['element'] == 'Water' && defender_weapon['element'] == 'Fire'
 				attacker_armor = attacker_armor + ELEMENT_BONUS
-				attacker_armor_element_bonus = "+ 04#{ELEMENT_BONUS}"
+				attacker_armor_element_bonus = "+04#{ELEMENT_BONUS}"
 			end
 
 			if attacker_armor['element'] == 'Fire' && defender_weapon['element'] == 'Life'
 				attacker_armor = attacker_armor + ELEMENT_BONUS
-				attacker_armor_element_bonus = "+ 03#{ELEMENT_BONUS}"
+				attacker_armor_element_bonus = "+03#{ELEMENT_BONUS}"
 			end
 
 			#Attacker -
 			if attacker_armor['element'] == 'Water' && defender_weapon['element'] == 'Life'
 				attacker_armor = attacker_armor - ELEMENT_BONUS
-				attacker_armor_element_bonus = "- 11#{ELEMENT_BONUS}"
+				attacker_armor_element_bonus = "-11#{ELEMENT_BONUS}"
 			end
 
 			if attacker_armor['element'] == 'Fire' && defender_weapon['element'] == 'Water'
 				attacker_armor = attacker_armor - ELEMENT_BONUS
-				attacker_armor_element_bonus = "- 04#{ELEMENT_BONUS}"
+				attacker_armor_element_bonus = "-04#{ELEMENT_BONUS}"
 			end
 
 			if attacker_armor['element'] == 'Life' && defender_weapon['element'] == 'Fire'
 				attacker_armor = attacker_armor - ELEMENT_BONUS
-				attacker_armor_element_bonus = "- 03#{ELEMENT_BONUS}"
+				attacker_armor_element_bonus = "-03#{ELEMENT_BONUS}"
 			end
 
 			#Defender +
 			if defender_armor['element'] == 'Water' && attacker_weapon['element'] == 'Life'
 				defender_armor = defender_armor + ELEMENT_BONUS
-				defender_armor_element_bonus = "+ 11#{ELEMENT_BONUS}"
+				defender_armor_element_bonus = "+11#{ELEMENT_BONUS}"
 			end
 
 			if defender_armor['element'] == 'Fire' && attacker_weapon['element'] == 'Water'
 				defender_armor = defender_armor + ELEMENT_BONUS
-				defender_armor_element_bonus = "+ 04#{ELEMENT_BONUS}"
+				defender_armor_element_bonus = "+04#{ELEMENT_BONUS}"
 			end
 
 			if defender_armor['element'] == 'Life' && attacker_weapon['element'] == 'Fire'
 				defender_armor = defender_armor + ELEMENT_BONUS
-				defender_armor_element_bonus = "+ 03#{ELEMENT_BONUS}"
+				defender_armor_element_bonus = "+03#{ELEMENT_BONUS}"
 			end
 
 			#Defender -
 			if defender_armor['element'] == 'Life' && attacker_weapon['element'] == 'Water'
 				defender_armor = defender_armor - ELEMENT_BONUS
-				defender_armor_element_bonus = "- 11#{ELEMENT_BONUS}"
+				defender_armor_element_bonus = "-11#{ELEMENT_BONUS}"
+			end
 
 			if defender_armor['element'] == 'Water' && attacker_weapon['element'] == 'Fire'
 				defender_armor = defender_armor - ELEMENT_BONUS
-				defender_armor_element_bonus = "- 04#{ELEMENT_BONUS}"
+				defender_armor_element_bonus = "-04#{ELEMENT_BONUS}"
 			end
 
 			if defender_armor['element'] == 'Fire' && attacker_weapon['element'] == 'Life'
 				defender_armor = defender_armor - ELEMENT_BONUS
-				defender_armor_element_bonus = "- 03#{ELEMENT_BONUS}"
+				defender_armor_element_bonus = "-03#{ELEMENT_BONUS}"
 			end
-
-
+			
 			#============================================================================
 
 			#Calculate Damage
@@ -378,8 +377,8 @@ def attack( options={} )
 			end
 
 			channel.msg "----------------------------------------------------"
-			channel.msg "-> 02#{usernameA} [07#{get_level(usernameA)}] attacks 04#{usernameB} with their 06#{attacker_weapon['name']} [DMG:02#{attacker_damage} #{attacker_weapon_element_bonus} -04#{defender_armor} #{defender_armor_element_bonus} :ARM] = 02#{attacker_damage_done} Damage Inflicted"
-			channel.msg "-> 04#{usernameB} [07#{get_level(usernameB)}] counters 02#{usernameA} with their 06#{defender_weapon['name']} [DMG:04#{defender_damage} #{defender_weapon_element_bonus} -02#{attacker_armor} #{attacker_armor_element_bonus} :ARM] = 04#{defender_damage_done} Damage Inflicted"
+			channel.msg "-> 02#{usernameA} [07#{get_level(usernameA)}] attacks 04#{usernameB} with their 06#{attacker_weapon['name']} [DMG:02#{attacker_damage}#{attacker_weapon_element_bonus}-04#{defender_armor}#{defender_armor_element_bonus}:ARM] = 02#{attacker_damage_done} Damage Inflicted"
+			channel.msg "-> 04#{usernameB} [07#{get_level(usernameB)}] counters 02#{usernameA} with their 06#{defender_weapon['name']} [DMG:04#{defender_damage}#{defender_weapon_element_bonus}-02#{attacker_armor}#{attacker_armor_element_bonus}:ARM] = 04#{defender_damage_done} Damage Inflicted"
 			channel.msg "----------------------------------------------------"
 
 			#Here we start to calculate the battle results
@@ -420,11 +419,7 @@ def attack( options={} )
 				calculate_level(usernameA)
 				calculate_level(usernameB)
 			end
-
-		end #End Account Check
-
 	end #End Null Users Check.
-
 end #End Of Attack
 
-#end #End Class
+end #End Class
