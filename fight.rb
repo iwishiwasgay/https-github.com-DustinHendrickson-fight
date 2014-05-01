@@ -2,15 +2,15 @@ require 'cinch'
 require 'time'
 require 'yaml'
 
-#Code by Dustin Hendrickson
-#dustin.hendrickson@gmail.com
+# Code by Dustin Hendrickson
+# dustin.hendrickson@gmail.com
 
 
 class Fight
 include Cinch::Plugin
-prefix "@"
+prefix '@'
 
-#Configuration Variables=======
+# Configuration Variables=======
 MAX_EXPERIENCE_PER_WIN = 10
 MAX_EXPERIENCE_PER_TIE = 5
 
@@ -18,25 +18,36 @@ ELEMENT_BONUS = 3
 
 LEVEL_FACTOR = 100
 
-TIMER_RANGE_MIN = 120
-TIMER_RANGE_MAX = 240
-
 MINIMUM_DAMAGE = 1
-#==============================
+#===============================
+# Color Defenitions
+RED = '04'
+BLUE = '12'
+GREEN = '03'
+BLACK = '01'
+BROWN = '05'
+PURPLE = '06'
+YELLOW = '08'
+TEAL = '11'
+ORANGE = '07'
+PINK = '13'
+GREY = '14'
+BOLD = ''
+CF = '' #CLEAR FORMATTING
 
-#Read the config file in for items and set arrays.
+# Read the config file in for items and set arrays.
 EQUIPMENT = YAML.load_file('plugins/fight/equipment.yml')
 
 WEAPONS = EQUIPMENT['weapons']
 ARMOR = EQUIPMENT['armor']
 
-#Timer Method to run the Attack Function every interval.
+# Timer Method to run the Attack Function every interval.
 timer 120, method: :attack
 
-#Regex to grab the command trigger string.
+# Regex to grab the command trigger string.
 match /^@fight (\S+) ?(.+)?/, method: :fight, :use_prefix => false
 
-#Run the functions based on passed in command.
+# Run the functions based on passed in command.
 def fight(m, command, param)
 	case command
 		when 'info'
@@ -50,7 +61,7 @@ def fight(m, command, param)
 	end
 end
 
-#Internal Reddis Function List
+# Internal Reddis Function List
 def get_exp(param)
 	@bot.database.get("user:#{param}:exp")
 end
@@ -87,28 +98,73 @@ def save_armor(param, armor)
 	@bot.database.set("user:#{param}:armor", armor)
 end
 
-#This function takes a username and displays that user's account details.
+# This function takes a username and displays that user's account details.
 def info (m, param)
 	if param.nil?
 		if get_level(m.user.nick).to_i >= 1
 			info_weapon = WEAPONS[get_level(m.user.nick).to_i][get_weapon(m.user.nick).to_i]
 			info_armor = ARMOR[get_level(m.user.nick).to_i][get_armor(m.user.nick).to_i]
-			@bot.msg(m.user.nick,"-> 02#{m.user.nick}: Level [07#{get_level(m.user.nick)}] EXP: [03#{get_exp(m.user.nick)}/03#{get_level(m.user.nick).to_i*LEVEL_FACTOR}] Weapon: [06#{info_weapon['name']} | DMG: 131- #{info_weapon['damage']} | ELE: 14#{info_weapon['element']}] Armor: [06#{info_armor['name']} | ARM: 050-#{info_armor['armor']} | ELE: 14#{info_armor['element']}] AP: [#{@bot.database.get('user:Dustin:AP')}]")
+			@bot.msg(m.user.nick,"#{BOLD}-> #{BLUE}#{m.user.nick}#{CF}: Level [#{ORANGE}#{get_level(m.user.nick)}#{CF}] EXP: [#{GREEN}#{get_exp(m.user.nick)}#{CF}/#{GREEN}#{get_level(m.user.nick).to_i*LEVEL_FACTOR}#{CF}] Weapon: [#{PURPLE}#{info_weapon['name']}#{CF} | DMG: #{PINK}1- #{info_weapon['damage']}#{CF} | ELE: #{wrapInElementColor(info_weapon['element'])}] Armor: [#{PURPLE}#{info_armor['name']}#{CF} | ARM: #{BROWN}0-#{info_armor['armor']}#{CF} | ELE: #{wrapInElementColor(info_armor['element'])}]")
 		else
-			@bot.msg(m.user.nick,"04-> You have not created a character.")
+			@bot.msg(m.user.nick, "#{RED}#{BOLD}-> You have not created a character.")
 		end
 	else
 		if get_level(param).to_i >= 1
 			info_weapon = WEAPONS[get_level(param).to_i][get_weapon(param).to_i]
 			info_armor = ARMOR[get_level(param).to_i][get_armor(param).to_i]
-			@bot.msg(m.user.nick,"-> 04#{param}: Level [07#{get_level(param)}] EXP: [03#{get_exp(param)}/03#{get_level(param).to_i*LEVEL_FACTOR}] Weapon: [06#{info_weapon['name']} | DMG: 131-#{info_weapon['damage']} | ELE: 14#{info_weapon['element']}] Armor: [06#{info_armor['name']} | ARM: 050-#{info_armor['armor']} | ELE: 14#{info_armor['element']}]")
+			@bot.msg(m.user.nick,"#{BOLD}-> #{RED}#{param}#{CF}: Level [#{ORANGE}#{get_level(param)}#{CF}] EXP: [#{GREEN}#{get_exp(param)}#{CF}/#{GREEN}#{get_level(param).to_i*LEVEL_FACTOR}#{CF}] Weapon: [#{PURPLE}#{info_weapon['name']}#{CF} | DMG: #{PINK}1-#{info_weapon['damage']}#{CF} | ELE: #{wrapInElementColor(info_weapon['element'])}] Armor: [#{PURPLE}#{info_armor['name']}#{CF} | ARM: #{BROWN}0-#{info_armor['armor']}#{CF} | ELE: #{wrapInElementColor(info_armor['element'])}]")
 		else
-			@bot.msg(m.user.nick,"04-> #{param} has not created a character.")
+			@bot.msg(m.user.nick,"#{RED}#{BOLD}-> #{param} has not created a character.")
 		end
 	end
 end
 
-#Checks to see if user has leveled up.
+def getElementBonus(elementAttacker, elementDefender)
+	case [elementAttacker, elementDefender]
+		when ['Fire', 'Life']
+			return "+#{RED}#{ELEMENT_BONUS}#{CF}"
+		when ['Water', 'Fire']
+			return "+#{TEAL}#{ELEMENT_BONUS}#{CF}"
+		when ['Life', 'Water']
+			return "+#{GREEN}#{ELEMENT_BONUS}#{CF}"
+		when ['Life', 'Fire']
+			return "-#{GREEN}#{ELEMENT_BONUS}#{CF}"
+		when ['Fire', 'Water']
+			return "-#{RED}#{ELEMENT_BONUS}#{CF}"
+		when ['Water', 'Life']
+			return "-#{TEAL}#{ELEMENT_BONUS}#{CF}"
+	else
+		return ""
+	end
+end
+
+def getElementTag(element)
+	case element
+		when "Fire"
+			return "#{RED}F#{CF}"
+		when "Water"
+			return "#{TEAL}W#{CF}"
+		when "Life"
+			return "#{GREEN}L#{CF}"
+		else
+			return "#{GREY}N#{CF}"
+		end
+end
+
+def wrapInElementColor(stringToWrap)
+	case stringToWrap
+		when "Fire"
+			return "#{RED}#{stringToWrap}#{CF}"
+		when "Water"
+			return "#{TEAL}#{stringToWrap}#{CF}"
+		when "Life"
+			return "#{GREEN}#{stringToWrap}#{CF}"
+		else
+			return "#{GREY}#{stringToWrap}#{CF}"
+		end
+end
+
+# Checks to see if user has leveled up.
 def calculate_level(param)
 	current_level = get_level(param).to_i
 	required_exp_new_level = current_level * LEVEL_FACTOR
@@ -126,19 +182,18 @@ def calculate_level(param)
 		chan = @bot.channels.sample
 		channel = Channel(chan)
 
-		channel.msg "----------------------------------------------------"
-
-		channel.msg "-> 02#{param} reaches level 07#{get_level(param)}! Equips a new [06#{new_weapon['name']} | DMG: 131-#{new_weapon['damage']} | ELE: 14#{new_weapon['element']}] and [06#{new_armor['name']} | ARM: 050-#{new_armor['armor']} | ELE: 14#{new_armor['element']}]"
+		channel.msg '----------------------------------------------------'
+		channel.msg "#{BOLD}-> #{BLUE}#{param}#{CF} reaches level #{ORANGE}#{get_level(param)}#{CF}! Equips a new [#{PURPLE}#{new_weapon['name']}#{CF} | DMG: #{PINK}1-#{new_weapon['damage']}#{CF} | ELE: #{wrapInElementColor(new_weapon['element'])}] and [#{PURPLE}#{new_armor['name']}#{CF} | ARM: #{BROWN}0-#{new_armor['armor']}#{CF} | ELE: #{wrapInElementColor(new_armor['element'])}]"
 	end
 end
 
-#Displays help documentation.
+# Displays help documentation.
 def help(m)
-	@bot.msg(m.user.nick,"-> Command List:-> 07@fight create (Creates a new character at level 1), 07@fight info Username (Displays Level,Exp,Equipment)")
-	@bot.msg(m.user.nick,"-> Game Info:-> Fighting other people and winning results in gaining EXP, every (#{LEVEL_FACTOR} * Level) EXP gives you new level. Each new level you recieve a new weapon and armor piece of your level.. Weapons do damage from 1-WeaponDamage. Armor protects 0-ArmorAmount. To win a fight you have to do more damage then you take in a fight. Bonus EXP is awarded for defeating an opponent higher level then you.")
+	@bot.msg(m.user.nick,"#{BOLD}-> Command List:#{BOLD}-> #{ORANGE}@fight create#{CF} (Creates a new character at level 1), #{ORANGE}@fight info Username#{CF} (Displays Level, Exp, Equipment, if no username is given, will display your own stats.) #{ORANGE}@fight ai#{CF} (Pairs you against an AI fight.)")
+	@bot.msg(m.user.nick,"#{BOLD}-> Game Info:#{BOLD}-> The bot will periodically pick 2 random registered users in the room and make them fight eachother, winning results in gaining EXP, every (#{LEVEL_FACTOR} * Level) EXP gives you new level. Each new level you will recieve a random new weapon and armor piece of your level. Weapons do damage from 1-WeaponDamage. Armor protects 0-ArmorAmount. To win a fight you have to do more damage then you take in a single exchange of swings. Bonus EXP is awarded for defeating an opponent higher level then you.")
 end
 
-#Create a new character.
+# Create a new character.
 def create(m)
 	randweapon = rand(5)
 	randarmor = rand(5)
@@ -148,34 +203,34 @@ def create(m)
 	save_level(m.user.nick, 1)
 	starterweapon = WEAPONS[1][randweapon]
 	starterarmor = ARMOR[1][randarmor]
-	m.reply "-> New character created for 02#{m.user.nick}. Starting with [06#{starterweapon['name']} | DMG: 131-#{starterweapon['damage']} | ELE: 14#{starterweapon['element']} ] and [06#{starterarmor['name']} | ARM: 050-#{starterarmor['armor']} | ELE: 14#{starterarmor['element']}]"
+	m.reply "#{BOLD}-> New character created for #{BLUE}#{m.user.nick}#{CF}. Starting with [#{PURPLE}#{starterweapon['name']}#{CF} | DMG: #{PINK}1-#{starterweapon['damage']}#{CF} | ELE: #{wrapInElementColor(starterweapon['element'])} ] and [#{PURPLE}#{starterarmor['name']}#{CF} | ARM: #{BROWN}0-#{starterarmor['armor']}#{CF} | ELE: #{wrapInElementColor(starterarmor['element'])}]"
 end
 
-#Create a new AI character.
-def createai(level)
+# Create a new AI character.
+def createAI(level)
 	randweapon = rand(5)
 	randarmor = rand(5)
-	save_weapon("AI", randweapon)
-	save_armor("AI", randarmor)
-	reset_exp("AI")
-	save_level("AI", level)
+	save_weapon('AI', randweapon)
+	save_armor('AI', randarmor)
+	reset_exp('AI')
+	save_level('AI', level)
 end
 
 def fightai(m)
-	attack(:a => m, :b => "ai")
+	attack(:a => m, :b => 'AI')
 end
 
 def attack( options={} )
 	chan = @bot.channels.sample
 	channel = Channel(chan)
 
-	#Setup default options if ai fight was passed to the function.
-	if options[:b] == "ai"
+	# Setup default options if ai fight was passed to the function.
+	if options[:b] == 'AI'
 		usernameA = options[:a].user.nick
-		usernameB = "AI"
-		createai(get_level(usernameA).to_i)
+		usernameB = 'AI'
+		createAI(get_level(usernameA).to_i)
 	else
-		#Loop till we find a valid user
+		# Loop till we find a valid user
 		usernameA = ''
 		i = 0
 		while usernameA == 'FightBot' || usernameA == ''
@@ -190,7 +245,7 @@ def attack( options={} )
 			end
 		end
 
-		#Loop till we find a valid user to fight against userA.
+		# Loop till we find a valid user to fight against userA.
 		usernameB = ''
 		i = 0
 		while usernameB == 'FightBot' || usernameB == '' || usernameA == usernameB || get_level(usernameB).to_i <= 0
@@ -201,173 +256,81 @@ def attack( options={} )
 			i +=1
 			if i >= 50
 				usernameB = ''
+				# We can't find anyone to fight against, but we have someone
+				# who wants to fight, so we'll pair them with an AI.
+				if usernameA != ''
+					usernameB = 'AI'
+					createAI(get_level(usernameA).to_i)
+				end
 				break
 			end
 		end
 	end
 
-	#We don't want to do anything if any of the users didnt get set.
+	# We don't want to do anything if any of the users didnt get set.
 	if usernameA != '' && usernameB != ''
-
 			attacker_level = get_level(usernameA).to_i
 			defender_level = get_level(usernameB).to_i
 
 			attacker_weapon = WEAPONS[attacker_level][get_weapon(usernameA).to_i]
 			defender_weapon = WEAPONS[defender_level][get_weapon(usernameB).to_i]
 
-			attacker_armor = ARMOR[attacker_level][get_armor(usernameA).to_i]
-			defender_armor = ARMOR[defender_level][get_armor(usernameB).to_i]
+			attacker_armorworn = ARMOR[attacker_level][get_armor(usernameA).to_i]
+			defender_armorworn = ARMOR[defender_level][get_armor(usernameB).to_i]
 
 			attacker_damage = rand(attacker_weapon['damage']) + MINIMUM_DAMAGE
 			defender_damage = rand(defender_weapon['damage']) + MINIMUM_DAMAGE
 
-			attacker_armor = rand(attacker_armor['armor'])
-			defender_armor = rand(defender_armor['armor'])
-
-			attacker_weapon_element_bonus = ""
-			defender_weapon_element_bonus = ""
-			attacker_armor_element_bonus = ""
-			defender_armor_element_bonus = ""
+			attacker_armor = rand(attacker_armorworn['armor'])
+			defender_armor = rand(defender_armorworn['armor'])
 
 			#============================================================================
-			#Element Definitions - Weapons
-			#Attacker +
-			
-			if attacker_weapon['element'] == 'Life' && defender_armor['element'] == 'Water'
-				attacker_damage = attacker_damage + ELEMENT_BONUS
-				attacker_weapon_element_bonus = "+11#{ELEMENT_BONUS}"
+			# Element Definitions =======================================================
+			#============================================================================
+			attacker_weapon_element_bonus = getElementBonus(attacker_weapon['element'], defender_armorworn['element'])
+			defender_weapon_element_bonus = getElementBonus(defender_weapon['element'], attacker_armorworn['element'])
+
+			attacker_base_damage = attacker_damage
+			defender_base_damage = defender_damage
+
+			attacker_bonus_modifier = attacker_weapon_element_bonus[0]
+			case attacker_bonus_modifier
+				when "+"
+					attacker_damage += ELEMENT_BONUS
+				when "-"
+					attacker_damage -= ELEMENT_BONUS
 			end
 
-			if attacker_weapon['element'] == 'Water' && defender_armor['element'] == 'Fire'
-				attacker_damage = attacker_damage + ELEMENT_BONUS
-				attacker_weapon_element_bonus = "+04#{ELEMENT_BONUS}"
+			defender_bonus_modifier = defender_weapon_element_bonus[0]
+			case defender_bonus_modifier
+				when "+"
+					defender_damage += ELEMENT_BONUS
+				when "-"
+					defender_damage -= ELEMENT_BONUS
 			end
-
-			if attacker_weapon['element'] == 'Fire' && defender_armor['element'] == 'Life'
-				attacker_damage = attacker_damage + ELEMENT_BONUS
-				attacker_weapon_element_bonus = "+03#{ELEMENT_BONUS}"
-			end
-
-			#Attacker -
-			if attacker_weapon['element'] == 'Water' && defender_armor['element'] == 'Life'
-				attacker_damage = attacker_damage - ELEMENT_BONUS
-				attacker_weapon_element_bonus = "-11#{ELEMENT_BONUS}"
-			end
-
-			if attacker_weapon['element'] == 'Fire' && defender_armor['element'] == 'Water'
-				attacker_damage = attacker_damage - ELEMENT_BONUS
-				attacker_weapon_element_bonus = "-04#{ELEMENT_BONUS}"
-			end
-
-			if attacker_weapon['element'] == 'Life' && defender_armor['element'] == 'Fire'
-				attacker_damage = attacker_damage - ELEMENT_BONUS
-				attacker_weapon_element_bonus = "-03#{ELEMENT_BONUS}"
-			end
-
-			#Defender +
-			if defender_weapon['element'] == 'Life' && attacker_armor['element'] == 'Water'
-				defender_damage = defender_damage + ELEMENT_BONUS
-				defender_weapon_element_bonus = "+11#{ELEMENT_BONUS}"
-			end
-
-			if defender_weapon['element'] == 'Water' && attacker_armor['element'] == 'Fire'
-				defender_damage = defender_damage + ELEMENT_BONUS
-				defender_weapon_element_bonus = "+04#{ELEMENT_BONUS}"
-			end
-
-			if defender_weapon['element'] == 'Fire' && attacker_armor['element'] == 'Life'
-				defender_damage = defender_damage + ELEMENT_BONUS
-				defender_weapon_element_bonus = "+03#{ELEMENT_BONUS}"
-			end
-
-			#Defender -
-			if defender_weapon['element'] == 'Water' && attacker_armor['element'] == 'Life'
-				defender_damage = defender_damage - ELEMENT_BONUS
-				defender_weapon_element_bonus = "-11#{ELEMENT_BONUS}"
-			end
-
-			if defender_weapon['element'] == 'Fire' && attacker_armor['element'] == 'Water'
-				defender_damage = defender_damage - ELEMENT_BONUS
-				defender_weapon_element_bonus = "-04#{ELEMENT_BONUS}"
-			end
-
-			if defender_weapon['element'] == 'Life' && attacker_armor['element'] == 'Water'
-				defender_damage = defender_damage - ELEMENT_BONUS
-				defender_weapon_element_bonus = "-03#{ELEMENT_BONUS}"
-			end
-
-			#Element Definitions - Armor
-			#Attacker +
-			if attacker_armor['element'] == 'Life' && defender_weapon['element'] == 'Water'
-				attacker_armor = attacker_armor + ELEMENT_BONUS
-				attacker_armor_element_bonus = "+11#{ELEMENT_BONUS}"
-			end
-
-			if attacker_armor['element'] == 'Water' && defender_weapon['element'] == 'Fire'
-				attacker_armor = attacker_armor + ELEMENT_BONUS
-				attacker_armor_element_bonus = "+04#{ELEMENT_BONUS}"
-			end
-
-			if attacker_armor['element'] == 'Fire' && defender_weapon['element'] == 'Life'
-				attacker_armor = attacker_armor + ELEMENT_BONUS
-				attacker_armor_element_bonus = "+03#{ELEMENT_BONUS}"
-			end
-
-			#Attacker -
-			if attacker_armor['element'] == 'Water' && defender_weapon['element'] == 'Life'
-				attacker_armor = attacker_armor - ELEMENT_BONUS
-				attacker_armor_element_bonus = "-11#{ELEMENT_BONUS}"
-			end
-
-			if attacker_armor['element'] == 'Fire' && defender_weapon['element'] == 'Water'
-				attacker_armor = attacker_armor - ELEMENT_BONUS
-				attacker_armor_element_bonus = "-04#{ELEMENT_BONUS}"
-			end
-
-			if attacker_armor['element'] == 'Life' && defender_weapon['element'] == 'Fire'
-				attacker_armor = attacker_armor - ELEMENT_BONUS
-				attacker_armor_element_bonus = "-03#{ELEMENT_BONUS}"
-			end
-
-			#Defender +
-			if defender_armor['element'] == 'Water' && attacker_weapon['element'] == 'Life'
-				defender_armor = defender_armor + ELEMENT_BONUS
-				defender_armor_element_bonus = "+11#{ELEMENT_BONUS}"
-			end
-
-			if defender_armor['element'] == 'Fire' && attacker_weapon['element'] == 'Water'
-				defender_armor = defender_armor + ELEMENT_BONUS
-				defender_armor_element_bonus = "+04#{ELEMENT_BONUS}"
-			end
-
-			if defender_armor['element'] == 'Life' && attacker_weapon['element'] == 'Fire'
-				defender_armor = defender_armor + ELEMENT_BONUS
-				defender_armor_element_bonus = "+03#{ELEMENT_BONUS}"
-			end
-
-			#Defender -
-			if defender_armor['element'] == 'Life' && attacker_weapon['element'] == 'Water'
-				defender_armor = defender_armor - ELEMENT_BONUS
-				defender_armor_element_bonus = "-11#{ELEMENT_BONUS}"
-			end
-
-			if defender_armor['element'] == 'Water' && attacker_weapon['element'] == 'Fire'
-				defender_armor = defender_armor - ELEMENT_BONUS
-				defender_armor_element_bonus = "-04#{ELEMENT_BONUS}"
-			end
-
-			if defender_armor['element'] == 'Fire' && attacker_weapon['element'] == 'Life'
-				defender_armor = defender_armor - ELEMENT_BONUS
-				defender_armor_element_bonus = "-03#{ELEMENT_BONUS}"
-			end
-			
 			#============================================================================
 
-			#Calculate Damage
+			if attacker_base_damage < 0
+				attacker_base_damage = 0
+			end
+
+			if defender_base_damage < 0
+				defender_base_damage = 0
+			end
+
+			if attacker_damage < 0
+				attacker_damage = 0
+			end
+
+			if defender_damage < 0
+				defender_damage = 0
+			end
+
+			# Calculate Damage
 			attacker_damage_done = attacker_damage - defender_armor
 			defender_damage_done = defender_damage - attacker_armor
 
-			#Make sure we can do math on the numbers.
+			# Make sure we can do math on the numbers.
 			if attacker_damage_done < 0
 				attacker_damage_done = 0
 			end
@@ -376,13 +339,13 @@ def attack( options={} )
 				defender_damage_done = 0
 			end
 
-			channel.msg "----------------------------------------------------"
-			channel.msg "-> 02#{usernameA} [07#{get_level(usernameA)}] attacks 04#{usernameB} with their 06#{attacker_weapon['name']} [DMG:02#{attacker_damage}#{attacker_weapon_element_bonus}-04#{defender_armor}#{defender_armor_element_bonus}:ARM] = 02#{attacker_damage_done} Damage Inflicted"
-			channel.msg "-> 04#{usernameB} [07#{get_level(usernameB)}] counters 02#{usernameA} with their 06#{defender_weapon['name']} [DMG:04#{defender_damage}#{defender_weapon_element_bonus}-02#{attacker_armor}#{attacker_armor_element_bonus}:ARM] = 04#{defender_damage_done} Damage Inflicted"
-			channel.msg "----------------------------------------------------"
+			channel.msg '----------------------------------------------------'
+			channel.msg "-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{get_level(usernameA)}#{CF}] attacks #{RED}#{usernameB}#{CF} with #{PURPLE}#{attacker_weapon['name']}#{CF} #{getElementTag(attacker_weapon['element'])}[DMG:#{BLUE}#{attacker_base_damage}#{CF}#{attacker_weapon_element_bonus}#{CF}-#{RED}#{defender_armor}#{CF}:ARM]#{getElementTag(defender_armorworn['element'])} = #{BLUE}#{attacker_damage_done}#{CF} Damage Inflicted"
+			channel.msg "-> #{RED}#{usernameB}#{CF}[#{ORANGE}#{get_level(usernameB)}#{CF}] counters #{BLUE}#{usernameA}#{CF} with #{PURPLE}#{defender_weapon['name']}#{CF} #{getElementTag(defender_weapon['element'])}[DMG:#{RED}#{defender_base_damage}#{CF}#{defender_weapon_element_bonus}#{CF}-#{BLUE}#{attacker_armor}#{CF}:ARM]#{getElementTag(attacker_armorworn['element'])} = #{RED}#{defender_damage_done}#{CF} Damage Inflicted"
+			channel.msg '----------------------------------------------------'
 
-			#Here we start to calculate the battle results
-			#Check to see if the attacker did more damage than the defender and sets EXP.
+			# Here we start to calculate the battle results
+			# Check to see if the attacker did more damage than the defender and sets EXP.
 			if attacker_damage_done > defender_damage_done
 				base_exp = rand(MAX_EXPERIENCE_PER_WIN)+1
 				if get_level(usernameB).to_i > get_level(usernameA).to_i
@@ -391,12 +354,12 @@ def attack( options={} )
 					bonus_exp = 0
 				end
 				earned_exp = base_exp + bonus_exp
-				channel.msg "-> 02#{usernameA}[07#{get_level(usernameA)}][03#{get_exp(usernameA)}/03#{get_level(usernameA).to_i*LEVEL_FACTOR}] beats 04#{usernameB} [07#{get_level(usernameB)}][03#{get_exp(usernameB)}/03#{get_level(usernameB).to_i*LEVEL_FACTOR}] and gains 03#{base_exp}+03#{bonus_exp}=03#{earned_exp} EXP."
+				channel.msg "#{BOLD}-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{get_level(usernameA)}#{CF}][#{GREEN}#{get_exp(usernameA)}#{CF}/#{GREEN}#{get_level(usernameA).to_i*LEVEL_FACTOR}#{CF}] beats #{RED}#{usernameB}#{CF} [#{ORANGE}#{get_level(usernameB)}#{CF}][#{GREEN}#{get_exp(usernameB)}#{CF}/#{GREEN}#{get_level(usernameB).to_i*LEVEL_FACTOR}#{CF}] and gains #{GREEN}#{base_exp}#{CF}+#{GREEN}#{bonus_exp}#{CF}=#{GREEN}#{earned_exp}#{CF} EXP."
 				save_exp(usernameA, earned_exp)
 				calculate_level(usernameA)
 			end
 
-			#Defender Wins
+			# Defender Wins
 			if attacker_damage_done < defender_damage_done
 				base_exp = rand(MAX_EXPERIENCE_PER_WIN)+1
 				if get_level(usernameA).to_i > get_level(usernameB).to_i
@@ -405,21 +368,21 @@ def attack( options={} )
 					bonus_exp = 0
 				end
 				earned_exp = base_exp + bonus_exp
-				channel.msg "-> 04#{usernameB}[07#{get_level(usernameB)}][03#{get_exp(usernameB)}/03#{get_level(usernameB).to_i*LEVEL_FACTOR}] beats 02#{usernameA}[07#{get_level(usernameA)}][03#{get_exp(usernameA)}/03#{get_level(usernameA).to_i*LEVEL_FACTOR}] and gains 03#{base_exp}+03#{bonus_exp}=03#{earned_exp} EXP."
+				channel.msg "#{BOLD}-> #{RED}#{usernameB}#{CF}[#{ORANGE}#{get_level(usernameB)}#{CF}][#{GREEN}#{get_exp(usernameB)}#{CF}/#{GREEN}#{get_level(usernameB).to_i*LEVEL_FACTOR}#{CF}] beats #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{get_level(usernameA)}#{CF}][#{GREEN}#{get_exp(usernameA)}#{CF}/#{GREEN}#{get_level(usernameA).to_i*LEVEL_FACTOR}#{CF}] and gains #{GREEN}#{base_exp}#{CF}+#{GREEN}#{bonus_exp}#{CF}=#{GREEN}#{earned_exp}#{CF} EXP."
 				save_exp(usernameB, earned_exp)
 				calculate_level(usernameB)
 			end
 
-			#Tie
+			# Tie
 			if attacker_damage_done == defender_damage_done
 				earned_exp = rand(MAX_EXPERIENCE_PER_TIE)+1
-				channel.msg "-> 02#{usernameA}[07#{get_level(usernameA)}][03#{get_exp(usernameA)}/03#{get_level(usernameA).to_i*LEVEL_FACTOR}] ties 04#{usernameB}[07#{get_level(usernameB)}][03#{get_exp(usernameB)}/03#{get_level(usernameB).to_i*LEVEL_FACTOR}] and both gain 03#{earned_exp} EXP."
+				channel.msg "#{BOLD}-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{get_level(usernameA)}#{CF}][#{GREEN}#{get_exp(usernameA)}#{CF}/#{GREEN}#{get_level(usernameA).to_i*LEVEL_FACTOR}#{CF}] ties #{RED}#{usernameB}#{CF}[#{ORANGE}#{get_level(usernameB)}#{CF}][#{GREEN}#{get_exp(usernameB)}#{CF}/#{GREEN}#{get_level(usernameB).to_i*LEVEL_FACTOR}#{CF}] and both gain #{GREEN}#{earned_exp}#{CF} EXP."
 				save_exp(usernameA, earned_exp)
 				save_exp(usernameB, earned_exp)
 				calculate_level(usernameA)
 				calculate_level(usernameB)
 			end
-	end #End Null Users Check.
-end #End Of Attack
+	end # End Null Users Check.
+end # End Of Attack
 
-end #End Class
+end # End Class
