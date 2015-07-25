@@ -5,7 +5,6 @@ require 'yaml'
 # Code by Dustin Hendrickson
 # dustin.hendrickson@gmail.com
 
-
 class Fight
 include Cinch::Plugin
 prefix '@'
@@ -21,7 +20,8 @@ LEVEL_FACTOR = 100
 
 MINIMUM_DAMAGE = 1
 #===============================
-# Color Defenitions
+
+# Color Definitions
 RED = '04'
 BLUE = '12'
 GREEN = '03'
@@ -55,16 +55,12 @@ def fight(m, command, param)
 		  info m, param
 		when 'create'
 		  create m
-		when 'ai'
-			fightai m
 		when 'help'
 		  help m
 	end
 end
 
-# Internal Reddis Function List
-
-# Database Calls - !! NEED TO IMPLIMENT AND USE
+# Database Getters and Setters
 def dbGet(username, key)
 	@bot.database.get("user:#{username}:#{key}")
 end
@@ -321,8 +317,8 @@ def attack( options={} )
 			defender_damage_done = fixNegativeNumbers(defender_damage_done)
 
 			channel.msg '----------------------------------------------------'
-			channel.msg "-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}] attacks #{RED}#{usernameB}#{CF} with #{PURPLE}#{attacker_weapon['name']}#{CF} #{getElementTag(attacker_weapon['element'])}[DMG:#{BLUE}#{attacker_base_damage}#{CF}#{attacker_weapon_element_bonus}#{CF}-#{RED}#{defender_armor}#{CF}:ARM]#{getElementTag(defender_armorworn['element'])} = #{BLUE}#{attacker_damage_done}#{CF} Damage Inflicted"
-			channel.msg "-> #{RED}#{usernameB}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}] counters #{BLUE}#{usernameA}#{CF} with #{PURPLE}#{defender_weapon['name']}#{CF} #{getElementTag(defender_weapon['element'])}[DMG:#{RED}#{defender_base_damage}#{CF}#{defender_weapon_element_bonus}#{CF}-#{BLUE}#{attacker_armor}#{CF}:ARM]#{getElementTag(attacker_armorworn['element'])} = #{RED}#{defender_damage_done}#{CF} Damage Inflicted"
+			channel.msg "-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}] attacks #{RED}#{usernameB}#{CF}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}] with #{PURPLE}#{attacker_weapon['name']}#{CF} #{getElementTag(attacker_weapon['element'])}[DMG:#{BLUE}#{attacker_base_damage}#{CF}#{attacker_weapon_element_bonus}#{CF}-#{RED}#{defender_armor}#{CF}:ARM]#{getElementTag(defender_armorworn['element'])} = #{BLUE}#{attacker_damage_done}#{CF} Damage Inflicted"
+			channel.msg "-> #{RED}#{usernameB}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}] counters #{BLUE}#{usernameA}#{CF}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}] with #{PURPLE}#{defender_weapon['name']}#{CF} #{getElementTag(defender_weapon['element'])}[DMG:#{RED}#{defender_base_damage}#{CF}#{defender_weapon_element_bonus}#{CF}-#{BLUE}#{attacker_armor}#{CF}:ARM]#{getElementTag(attacker_armorworn['element'])} = #{RED}#{defender_damage_done}#{CF} Damage Inflicted"
 			channel.msg '----------------------------------------------------'
 
 			# Here we start to calculate the battle results
@@ -335,7 +331,7 @@ def attack( options={} )
 					bonus_exp = 0
 				end
 				earned_exp = base_exp + bonus_exp
-				channel.msg "#{BOLD}-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}][#{GREEN}#{dbGet(usernameA, 'exp')}#{CF}/#{GREEN}#{dbGet(usernameA, 'level').to_i*LEVEL_FACTOR}#{CF}] beats #{RED}#{usernameB}#{CF} [#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}][#{GREEN}#{dbGet(usernameB, 'exp')}#{CF}/#{GREEN}#{dbGet(usernameB, 'level').to_i*LEVEL_FACTOR}#{CF}] and gains #{GREEN}#{base_exp}#{CF}+#{GREEN}#{bonus_exp}#{CF}=#{GREEN}#{earned_exp}#{CF} EXP."
+				channel.msg "#{BOLD}-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}][#{GREEN}#{dbGet(usernameA, 'exp')}#{CF}/#{GREEN}#{dbGet(usernameA, 'level').to_i*LEVEL_FACTOR}#{CF}] beats #{RED}#{usernameB}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}][#{GREEN}#{dbGet(usernameB, 'exp')}#{CF}/#{GREEN}#{dbGet(usernameB, 'level').to_i*LEVEL_FACTOR}#{CF}] and gains #{GREEN}#{base_exp}#{CF}+#{GREEN}#{bonus_exp}#{CF}=#{GREEN}#{earned_exp}#{CF} EXP."
 				dbSet(usernameA, 'exp', dbGet(usernameA, 'exp').to_i + earned_exp.to_i)
 				calculate_level(usernameA)
 			end
