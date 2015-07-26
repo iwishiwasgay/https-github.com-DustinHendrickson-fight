@@ -107,7 +107,7 @@ def quest(options={})
 		end
 	end
 
-	if username != ''
+	if username != '' && defined?(username)
 		channel.msg("#{BOLD}#{GREEN}#{username} has embarked on a quest.#{CF}")
 
 		random = rand(100)
