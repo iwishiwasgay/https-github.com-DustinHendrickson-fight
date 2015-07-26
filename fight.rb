@@ -42,8 +42,10 @@ EQUIPMENT = YAML.load_file('plugins/fight/equipment.yml')
 WEAPONS = EQUIPMENT['weapons']
 ARMOR = EQUIPMENT['armor']
 
+random = 0
+
 # Timer Method to run the Attack Function every interval.
-timer 120, method: :attack
+timer 120, method: :roomtrigger
 
 # Regex to grab the command trigger string.
 match /^@fight (\S+) ?(.+)?/, method: :fight, :use_prefix => false
@@ -52,12 +54,84 @@ match /^@fight (\S+) ?(.+)?/, method: :fight, :use_prefix => false
 def fight(m, command, param)
 	case command
 		when 'info'
-		  info m, param
+			info m, param
 		when 'create'
-		  create m
+			create m
 		when 'help'
-		  help m
+			help m
+		when 'quest'
+			startquest m
 	end
+end
+
+def roomtrigger()
+	random = rand(30)
+	if random <= 5
+		quest()
+	else
+		attack()
+	end
+end
+
+def startquest(m)
+	if dbGet(m.user.nick, 'exp').to_i >= 15
+		dbSet(m.user.nick, 'exp', dbGet(m.user.nick, 'exp').to_i - 15)
+		@bot.msg(m.user.nick,"#{BOLD}-> #{GREEN} You have started a quest manually, costing you 15 exp.#{CF}")
+		quest(:username => m.user.nick)
+	else
+		@bot.msg(m.user.nick,"#{BOLD}-> #{RED} You do not have enough EXP to start a quest, it costs 15.#{CF}")
+	end
+end
+
+def quest(options={})
+	chan = @bot.channels.sample
+	channel = Channel(chan)
+	random = 0
+
+	#Select a random user from the channel
+	if options[:username] != ''
+		username = options[:username]
+	else
+		username = ''
+		i = 0
+		while username == 'Fight|Bot' || username == ''
+			username = chan.users.keys.sample.nick
+			if dbGet(username, 'level').to_i <= 0
+				username = ''
+			end
+			i +=1
+			if i >= 50
+				username = ''
+				break
+			end
+		end
+	end
+
+	channel.msg("#{BOLD}#{GREEN}#{username} has embarked on a quest.#{CF}")
+
+	random = rand(100)
+	# User will earn bonus EXP
+	if random <= 45 && random > 15
+		earned_exp = rand(25)+5
+		channel.msg "#{BOLD}-> #{BLUE}#{username}#{CF} has completed their quest successfully and earned #{earned_exp} bonus exp!"
+		dbSet(username, 'exp', dbGet(username, 'exp').to_i + earned_exp.to_i)
+		calculate_level(username)
+	end
+	# User will earn new items.
+	if random <= 15
+		randweapon = rand(5)
+		randarmor = rand(5)
+		dbSet(username, 'weapon', randweapon)
+		dbSet(username, 'armor', randarmor)
+		new_weapon = WEAPONS[dbGet(username, 'level').to_i][randweapon]
+		new_armor = ARMOR[dbGet(username, 'level').to_i][randarmor]
+		channel.msg "#{BOLD}-> #{BLUE}#{username}#{CF} has completed their quest successfully, during the quest they lost their weapons but found new ones #{new_weapon} and #{new_armor}."
+	end
+	# Quest was failed.
+	if random > 45
+		channel.msg "#{BOLD}-> #{RED}#{username}#{CF} has completely and utterly failed their quest."
+	end
+
 end
 
 # Database Getters and Setters
