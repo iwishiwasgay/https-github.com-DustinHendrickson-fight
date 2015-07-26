@@ -107,29 +107,31 @@ def quest(options={})
 		end
 	end
 
-	channel.msg("#{BOLD}#{GREEN}#{username} has embarked on a quest.#{CF}")
+	if username != ''
+		channel.msg("#{BOLD}#{GREEN}#{username} has embarked on a quest.#{CF}")
 
-	random = rand(100)
-	# User will earn bonus EXP
-	if random <= 45 && random > 15
-		earned_exp = rand(25)+5
-		channel.msg "#{BOLD}-> #{BLUE}#{username}#{CF} has completed their quest successfully and earned #{earned_exp} bonus exp!"
-		dbSet(username, 'exp', dbGet(username, 'exp').to_i + earned_exp.to_i)
-		calculate_level(username)
-	end
-	# User will earn new items.
-	if random <= 15
-		randweapon = rand(5)
-		randarmor = rand(5)
-		dbSet(username, 'weapon', randweapon)
-		dbSet(username, 'armor', randarmor)
-		new_weapon = WEAPONS[dbGet(username, 'level').to_i][randweapon]
-		new_armor = ARMOR[dbGet(username, 'level').to_i][randarmor]
-		channel.msg "#{BOLD}-> #{BLUE}#{username}#{CF} has completed their quest successfully, during the quest they lost their weapons but found new ones #{new_weapon} and #{new_armor}."
-	end
-	# Quest was failed.
-	if random > 45
-		channel.msg "#{BOLD}-> #{RED}#{username}#{CF} has completely and utterly failed their quest."
+		random = rand(100)
+		# User will earn bonus EXP
+		if random <= 45 && random > 15
+			earned_exp = rand(25)+5
+			channel.msg "#{BOLD}-> #{BLUE}#{username}#{CF} has completed their quest successfully and earned #{earned_exp} bonus exp!"
+			dbSet(username, 'exp', dbGet(username, 'exp').to_i + earned_exp.to_i)
+			calculate_level(username)
+		end
+		# User will earn new items.
+		if random <= 15
+			randweapon = rand(5)
+			randarmor = rand(5)
+			dbSet(username, 'weapon', randweapon)
+			dbSet(username, 'armor', randarmor)
+			new_weapon = WEAPONS[dbGet(username, 'level').to_i][randweapon]
+			new_armor = ARMOR[dbGet(username, 'level').to_i][randarmor]
+			channel.msg "#{BOLD}-> #{BLUE}#{username}#{CF} has completed their quest successfully, during the quest they lost their weapons but found new ones #{new_weapon} and #{new_armor}."
+		end
+		# Quest was failed.
+		if random > 45
+			channel.msg "#{BOLD}-> #{RED}#{username}#{CF} has completely and utterly failed their quest."
+		end
 	end
 
 end
