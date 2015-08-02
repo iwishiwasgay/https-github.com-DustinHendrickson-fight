@@ -45,7 +45,7 @@ ARMOR = EQUIPMENT['armor']
 random = 0
 
 # Timer Method to run the Attack Function every interval.
-timer 120, method: :roomtrigger
+timer 120, method: :attack
 
 # Regex to grab the command trigger string.
 match /^@fight (\S+) ?(.+)?/, method: :fight, :use_prefix => false
@@ -64,14 +64,6 @@ def fight(m, command, param)
 	end
 end
 
-def roomtrigger()
-	random = rand(30)
-	if random <= 5
-		quest()
-	else
-		attack()
-	end
-end
 
 def startquest(m)
 	if dbGet(m.user.nick, 'exp').to_i >= 15
@@ -83,6 +75,7 @@ def startquest(m)
 	end
 end
 
+
 def quest(options={})
 	chan = @bot.channels.sample
 	channel = Channel(chan)
@@ -93,43 +86,34 @@ def quest(options={})
 		username = options[:username]
 	else
 		username = ''
-		i = 0
-		while username == 'Fight|Bot' || username == ''
-			username = chan.users.keys.sample.nick
-			if dbGet(username, 'level').to_i <= 0
-				username = ''
-			end
-			i +=1
-			if i >= 50
-				username = ''
-				break
-			end
-		end
 	end
 
-	if username != '' && defined?(username)
+	if dbGet(username, 'level').to_i > 0
 		channel.msg("#{BOLD}#{GREEN}#{username} has embarked on a quest.#{CF}")
 
 		random = rand(100)
 		# User will earn bonus EXP
-		if random <= 45 && random > 15
-			earned_exp = rand(25)+5
+		if random <= 65 && random > 20
+			earned_exp = rand(25)+10
 			channel.msg "#{BOLD}-> #{BLUE}#{username}#{CF} has completed their quest successfully and earned #{earned_exp} bonus exp!"
 			dbSet(username, 'exp', dbGet(username, 'exp').to_i + earned_exp.to_i)
+			dbSet(username, 'quests_completed', dbGet(username, 'quests_completed').to_i + 1)
 			calculate_level(username)
 		end
 		# User will earn new items.
-		if random <= 15
+		if random <= 20
 			randweapon = rand(5)
 			randarmor = rand(5)
 			dbSet(username, 'weapon', randweapon)
 			dbSet(username, 'armor', randarmor)
+			dbSet(username, 'quests_completed', dbGet(username, 'quests_completed').to_i + 1)
 			new_weapon = WEAPONS[dbGet(username, 'level').to_i][randweapon]
 			new_armor = ARMOR[dbGet(username, 'level').to_i][randarmor]
 			channel.msg "#{BOLD}-> #{BLUE}#{username}#{CF} has completed their quest successfully, during the quest they lost their weapons but found new ones #{new_weapon} and #{new_armor}."
 		end
 		# Quest was failed.
-		if random > 45
+		if random > 65
+			dbSet(username, 'quests_failed', dbGet(username, 'quests_failed').to_i + 1)
 			channel.msg "#{BOLD}-> #{RED}#{username}#{CF} has completely and utterly failed their quest."
 		end
 	end
@@ -151,7 +135,27 @@ def info (m, param)
 		if dbGet(m.user.nick, 'level').to_i >= 1
 			info_weapon = WEAPONS[dbGet(m.user.nick, 'level').to_i][dbGet(m.user.nick, 'weapon').to_i]
 			info_armor = ARMOR[dbGet(m.user.nick, 'level').to_i][dbGet(m.user.nick, 'armor').to_i]
+			wins = dbGet(m.user.nick, "wins").to_i
+			loses = dbGet(m.user.nick, "loses").to_i
+			ties = dbGet(m.user.nick, "ties").to_i
+			killing_spree = dbGet(m.user.nick, "killing_spree").to_i
+			losing_spree = dbGet(m.user.nick, "losing_spree").to_i
+			quests_completed = dbGet(m.user.nick, "quests_completed").to_i
+			quests_failed = dbGet(m.user.nick, "quests_failed").to_i
+			win_totals = (wins + loses + ties)
+			quest_totals = (quests_completed + quests_failed)
+			if win_totals > 0
+				win_percent = (wins / win_totals).to_f * 100
+			else
+				win_percent = 0
+			end
+			if quest_totals > 0
+				quest_percent = (quests_completed / quest_totals).to_f * 100
+			else
+				quest_percent = 0
+			end
 			@bot.msg(m.user.nick,"#{BOLD}-> #{BLUE}#{m.user.nick}#{CF}: Level [#{ORANGE}#{dbGet(m.user.nick, 'level')}#{CF}] EXP: [#{GREEN}#{dbGet(m.user.nick, 'exp')}#{CF}/#{GREEN}#{dbGet(m.user.nick, 'level').to_i*LEVEL_FACTOR}#{CF}] Weapon: [#{PURPLE}#{info_weapon['name']}#{CF} | DMG: #{PINK}1#{CF}-#{PINK}#{info_weapon['damage']}#{CF} | ELE: #{wrapInElementColor(info_weapon['element'], info_weapon['element'])}] Armor: [#{PURPLE}#{info_armor['name']}#{CF} | ARM: #{BROWN}0#{CF}-#{BROWN}#{info_armor['armor']}#{CF} | ELE: #{wrapInElementColor(info_armor['element'], info_armor['element'])}]")
+			@bot.msg(m.user.nick,"#{BOLD} [Wins: #{wins}] [Loses: #{loses}] [Ties: #{ties}] [Killing Spree: #{killing_spree}] [Losing Spree: #{losing_spree}] [Quests Completed: #{quests_completed}] [Quests Failed: #{quests_failed}] [Win Percent: #{win_percent}%] [Quest Success Percent: #{quest_percent}%]#{CF}")
 		else
 			@bot.msg(m.user.nick, "#{RED}#{BOLD}-> You have not created a character.")
 		end
@@ -159,7 +163,27 @@ def info (m, param)
 		if dbGet(param, 'level').to_i >= 1
 			info_weapon = WEAPONS[dbGet(param, 'level').to_i][dbGet(param, 'weapon').to_i]
 			info_armor = ARMOR[dbGet(param, 'level').to_i][dbGet(param, 'armor').to_i]
+			wins = dbGet(param, "wins").to_i
+			loses = dbGet(param, "loses").to_i
+			ties = dbGet(param, "ties").to_i
+			killing_spree = dbGet(param, "killing_spree").to_i
+			losing_spree = dbGet(param, "losing_spree").to_i
+			quests_completed = dbGet(param, "quests_completed").to_i
+			quests_failed = dbGet(param, "quests_failed").to_i
+			win_totals = (wins + loses + ties)
+			quest_totals = (quests_completed + quests_failed)
+			if win_totals > 0
+				win_percent = (wins / win_totals).to_f * 100
+			else
+				win_percent = 0
+			end
+			if quest_totals > 0
+				quest_percent = (quests_completed / quest_totals).to_f * 100
+			else
+				quest_percent = 0
+			end
 			@bot.msg(m.user.nick,"#{BOLD}-> #{RED}#{param}#{CF}: Level [#{ORANGE}#{dbGet(param, 'level')}#{CF}] EXP: [#{GREEN}#{dbGet(param, 'exp')}#{CF}/#{GREEN}#{dbGet(param, 'level').to_i*LEVEL_FACTOR}#{CF}] Weapon: [#{PURPLE}#{info_weapon['name']}#{CF} | DMG: #{PINK}1#{CF}-#{PINK}#{info_weapon['damage']}#{CF} | ELE: #{wrapInElementColor(info_weapon['element'], info_weapon['element'])}] Armor: [#{PURPLE}#{info_armor['name']}#{CF} | ARM: #{BROWN}0#{CF}-#{BROWN}#{info_armor['armor']}#{CF} | ELE: #{wrapInElementColor(info_armor['element'], info_armor['element'])}]")
+			@bot.msg(m.user.nick,"#{BOLD} [Wins: #{wins}] [Loses: #{loses}] [Ties: #{ties}] [Killing Spree: #{killing_spree}] [Losing Spree: #{losing_spree}] [Quests Completed: #{quests_completed}] [Quests Failed: #{quests_failed}] [Win Percent: #{win_percent}%] [Quest Success Percent: #{quest_percent}%]#{CF}")
 		else
 			@bot.msg(m.user.nick,"#{RED}#{BOLD}-> #{param} has not created a character.")
 		end
@@ -248,13 +272,14 @@ end
 
 # Displays help documentation.
 def help(m)
-	@bot.msg(m.user.nick,"#{BOLD}-> Command List:#{BOLD}-> #{ORANGE}@fight create#{CF} (Creates a new character at level 1), #{ORANGE}@fight info Username#{CF} (Displays Level, Exp, Equipment, if no username is given, will display your own stats.) #{ORANGE}@fight ai#{CF} (Pairs you against an AI fight.)")
+	@bot.msg(m.user.nick,"#{BOLD}-> Command List: Message the bot these commands #{BOLD}-> #{ORANGE}@fight create#{CF} (Creates a new character at level 1), #{ORANGE}@fight info Username#{CF} (Displays Level, Exp, Equipment, if no username is given, will display your own stats.) #{ORANGE}@fight quest#{CF} this costs 15 exp, chance to get bonus exp or new weapons of your level.")
 	@bot.msg(m.user.nick," ")
-	@bot.msg(m.user.nick,"#{BOLD}-> Game Info:#{BOLD} Fight! is an idle RPG game where you will have little input in the process. The bot will periodically pick 2 random registered users in the room and make them fight eachother, winning results in gaining EXP, every (#{LEVEL_FACTOR} * Level) EXP gives you new level. Each new level you will recieve a random new weapon and armor piece of your level. Weapons do damage from 1-WeaponDamage. Armor protects 0-ArmorAmount. To win a fight you have to do more damage then you take in a single exchange of swings. Bonus EXP is awarded for defeating an opponent higher level then you.")
+	@bot.msg(m.user.nick,"#{BOLD}-> Game Info:#{BOLD} Fight! is an idle RPG game where you will have little input in the process. The bot will periodically pick 2 random registered users in the room and make them fight each other, winning results in gaining EXP, every (#{LEVEL_FACTOR} * Level) EXP gives you new level. Each new level you will receive a random new weapon and armor piece of your level. Weapons do damage from 1-WeaponDamage. Armor protects 0-ArmorAmount. To win a fight you have to do more damage then you take in a single exchange of swings. You can crit against a higher level than you, adding LEVEL_DIFFERENCE extra damage if successful. Bonus EXP is awarded for defeating an opponent higher level then you.")
 	@bot.msg(m.user.nick," ")
-	@bot.msg(m.user.nick,"#{BOLD}-> Game Info cont..:#{BOLD}  Elements play a big factor here, your weapon can randomly have either the #{RED}Fire#{CF}, #{GREEN}Life#{CF} or #{TEAL}Water#{CF} elements. When you attack someone it will check your Weapon Element vs their Armor Element, if your weapon element beats their armor element, you will recieve +3 damage. If it is weak against the other, you will get -3 damage.")
+	@bot.msg(m.user.nick,"#{BOLD}-> Game Info cont..:#{BOLD}  Elements play a big factor here, your weapon can randomly have either the #{RED}Fire#{CF}, #{GREEN}Life#{CF} or #{TEAL}Water#{CF} elements. When you attack someone it will check your Weapon Element vs their Armor Element, if your weapon element beats their armor element, you will receive +3 damage. If it is weak against the other, you will get -3 damage.")
 	@bot.msg(m.user.nick," ")
 	@bot.msg(m.user.nick,"#{BOLD}-> Element Chart:#{BOLD} #{BOLD}#{RED}Fire#{CF}->#{GREEN}Life#{CF} | #{GREEN}Life#{CF}->#{TEAL}Water#{CF} | #{TEAL}Water#{CF}->#{RED}Fire#{CF}#{BOLD}")
+
 end
 
 # Create a new character.
@@ -338,6 +363,23 @@ def attack( options={} )
 	if usernameA != '' && usernameB != ''
 			attacker_level = dbGet(usernameA, 'level').to_i
 			defender_level = dbGet(usernameB, 'level').to_i
+			attacker_is_higher_level = false
+			defender_is_higher_level = false
+			defender_crit = ''
+			attacker_crit = ''
+			attacker_losing_spree = dbGet(usernameA, 'losing_spree').to_i
+			defender_losing_spree = dbGet(usernameB, 'losing_spree').to_i
+
+			#Let's get the level difference
+			if attacker_level > defender_level
+				level_difference = attacker_level - defender_level
+				attacker_is_higher_level = true
+			end
+
+			if defender_level > attacker_level
+				level_difference = defender_level - attacker_level
+				defender_is_higher_level = true
+			end
 
 			attacker_weapon = WEAPONS[attacker_level][dbGet(usernameA, 'weapon').to_i]
 			defender_weapon = WEAPONS[defender_level][dbGet(usernameB, 'weapon').to_i]
@@ -384,6 +426,24 @@ def attack( options={} )
 			attacker_damage = fixNegativeNumbers(attacker_damage)
 			defender_damage = fixNegativeNumbers(defender_damage)
 
+			# Check for crits for lower levels.
+			if attacker_is_higher_level == true
+				random = rand(5)
+				if random <= 1
+					defender_damage = defender_damage + level_difference
+					defender_crit = 'CRIT! + ' + level_difference
+				end
+			end
+
+			if defender_is_higher_level == true
+				random = rand(5)
+				if random <= 1
+					attacker_damage = attacker_damage + level_difference
+					attacker_crit = 'CRIT! + ' + level_difference
+				end
+			end
+
+
 			# Calculate Damage
 			attacker_damage_done = attacker_damage - defender_armor
 			defender_damage_done = defender_damage - attacker_armor
@@ -393,37 +453,57 @@ def attack( options={} )
 			defender_damage_done = fixNegativeNumbers(defender_damage_done)
 
 			channel.msg '----------------------------------------------------'
-			channel.msg "-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}] attacks #{RED}#{usernameB}#{CF}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}] with #{PURPLE}#{attacker_weapon['name']}#{CF} #{getElementTag(attacker_weapon['element'])}[DMG:#{BLUE}#{attacker_base_damage}#{CF}#{attacker_weapon_element_bonus}#{CF}-#{RED}#{defender_armor}#{CF}:ARM]#{getElementTag(defender_armorworn['element'])} = #{BLUE}#{attacker_damage_done}#{CF} Damage Inflicted"
-			channel.msg "-> #{RED}#{usernameB}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}] counters #{BLUE}#{usernameA}#{CF}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}] with #{PURPLE}#{defender_weapon['name']}#{CF} #{getElementTag(defender_weapon['element'])}[DMG:#{RED}#{defender_base_damage}#{CF}#{defender_weapon_element_bonus}#{CF}-#{BLUE}#{attacker_armor}#{CF}:ARM]#{getElementTag(attacker_armorworn['element'])} = #{RED}#{defender_damage_done}#{CF} Damage Inflicted"
+			channel.msg "-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}] attacks #{RED}#{usernameB}#{CF}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}] with #{PURPLE}#{attacker_weapon['name']}#{CF} #{getElementTag(attacker_weapon['element'])} #{attacker_crit} [DMG:#{BLUE}#{attacker_base_damage}#{CF}#{attacker_weapon_element_bonus}#{CF}-#{RED}#{defender_armor}#{CF}:ARM]#{getElementTag(defender_armorworn['element'])} = #{BLUE}#{attacker_damage_done}#{CF} Damage Inflicted"
+			channel.msg "-> #{RED}#{usernameB}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}] counters #{BLUE}#{usernameA}#{CF}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}] with #{PURPLE}#{defender_weapon['name']}#{CF} #{getElementTag(defender_weapon['element'])} #{defender_crit} [DMG:#{RED}#{defender_base_damage}#{CF}#{defender_weapon_element_bonus}#{CF}-#{BLUE}#{attacker_armor}#{CF}:ARM]#{getElementTag(attacker_armorworn['element'])} = #{RED}#{defender_damage_done}#{CF} Damage Inflicted"
 			channel.msg '----------------------------------------------------'
 
 			# Here we start to calculate the battle results
 			# Check to see if the attacker did more damage than the defender and sets EXP.
 			if attacker_damage_done > defender_damage_done
 				base_exp = rand(MAX_EXPERIENCE_PER_WIN)+1
-				if dbGet(usernameB, 'level').to_i > dbGet(usernameA, 'level').to_i
-					bonus_exp = (base_exp * (dbGet(usernameB, 'level').to_i - dbGet(usernameA, 'level').to_i))
+				if defender_level > attacker_level
+					bonus_exp = (base_exp * (defender_level - attacker_level)) + attacker_losing_spree
 				else
 					bonus_exp = 0
 				end
 				earned_exp = base_exp + bonus_exp
 				channel.msg "#{BOLD}-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}][#{GREEN}#{dbGet(usernameA, 'exp')}#{CF}/#{GREEN}#{dbGet(usernameA, 'level').to_i*LEVEL_FACTOR}#{CF}] beats #{RED}#{usernameB}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}][#{GREEN}#{dbGet(usernameB, 'exp')}#{CF}/#{GREEN}#{dbGet(usernameB, 'level').to_i*LEVEL_FACTOR}#{CF}] and gains #{GREEN}#{base_exp}#{CF}+#{GREEN}#{bonus_exp}#{CF}=#{GREEN}#{earned_exp}#{CF} EXP."
 				dbSet(usernameA, 'exp', dbGet(usernameA, 'exp').to_i + earned_exp.to_i)
+				dbSet(usernameA, 'wins', dbGet(usernameA, 'wins').to_i + 1)
+				dbSet(usernameB, 'loses', dbGet(usernameB, 'loses').to_i + 1)
+				dbSet(usernameA, 'killing_spree', dbGet(usernameA, 'killing_spree').to_i + 1)
+				dbSet(usernameB, 'killing_spree', 0)
+				dbSet(usernameB, 'losing_spree', dbGet(usernameB, 'losing_spree').to_i + 1)
+				dbSet(usernameA, 'losing_spree', 0)
 				calculate_level(usernameA)
+				if dbGet(usernameA, 'killing_spree').to_i == 5
+					channel.msg "#{BOLD}-> #{BLUE}#{usernameA}#{CF} redeems their killing spree bonus for a free quest!"
+					quest(:username => usernameA)
+				end
 			end
 
 			# Defender Wins
 			if attacker_damage_done < defender_damage_done
 				base_exp = rand(MAX_EXPERIENCE_PER_WIN)+1
-				if dbGet(usernameA, 'level').to_i > dbGet(usernameB, 'level').to_i
-					bonus_exp = (base_exp * (dbGet(usernameA, 'level').to_i - dbGet(usernameB, 'level').to_i))
+				if attacker_level > defender_level
+					bonus_exp = (base_exp * (attacker_level - defender_level)) + defender_losing_spree
 				else
 					bonus_exp = 0
 				end
 				earned_exp = base_exp + bonus_exp
 				channel.msg "#{BOLD}-> #{RED}#{usernameB}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}][#{GREEN}#{dbGet(usernameB, 'exp')}#{CF}/#{GREEN}#{dbGet(usernameB, 'level').to_i*LEVEL_FACTOR}#{CF}] beats #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}][#{GREEN}#{dbGet(usernameA, 'exp')}#{CF}/#{GREEN}#{dbGet(usernameA, 'level').to_i*LEVEL_FACTOR}#{CF}] and gains #{GREEN}#{base_exp}#{CF}+#{GREEN}#{bonus_exp}#{CF}=#{GREEN}#{earned_exp}#{CF} EXP."
 				dbSet(usernameB, 'exp', dbGet(usernameB, 'exp').to_i + earned_exp.to_i)
+				dbSet(usernameB, 'wins', dbGet(usernameB, 'wins').to_i + 1)
+				dbSet(usernameA, 'loses', dbGet(usernameA, 'loses').to_i + 1)
+				dbSet(usernameB, 'killing_spree', dbGet(usernameB, 'killing_spree').to_i + 1)
+				dbSet(usernameA, 'killing_spree', 0)
+				dbSet(usernameA, 'losing_spree', dbGet(usernameA, 'losing_spree').to_i + 1)
+				dbSet(usernameB, 'losing_spree', 0)
 				calculate_level(usernameB)
+				if dbGet(usernameB, 'killing_spree').to_i == 5
+					channel.msg "#{BOLD}-> #{BLUE}#{usernameB}#{CF} redeems their killing spree bonus for a free quest!"
+					quest(:username => usernameB)
+				end
 			end
 
 			# Tie
@@ -432,6 +512,12 @@ def attack( options={} )
 				channel.msg "#{BOLD}-> #{BLUE}#{usernameA}#{CF}[#{ORANGE}#{dbGet(usernameA, 'level')}#{CF}][#{GREEN}#{dbGet(usernameA, 'exp')}#{CF}/#{GREEN}#{dbGet(usernameA, 'level').to_i*LEVEL_FACTOR}#{CF}] ties #{RED}#{usernameB}#{CF}[#{ORANGE}#{dbGet(usernameB, 'level')}#{CF}][#{GREEN}#{dbGet(usernameB, 'exp')}#{CF}/#{GREEN}#{dbGet(usernameB, 'level').to_i*LEVEL_FACTOR}#{CF}] and both gain #{GREEN}#{earned_exp}#{CF} EXP."
 				dbSet(usernameA, 'exp', dbGet(usernameA, 'exp').to_i + earned_exp.to_i)
 				dbSet(usernameB, 'exp', dbGet(usernameB, 'exp').to_i + earned_exp.to_i)
+				dbSet(usernameA, 'ties', dbGet(usernameA, 'ties').to_i + 1)
+				dbSet(usernameB, 'ties', dbGet(usernameB, 'ties').to_i + 1)
+				dbSet(usernameA, 'killing_spree', 0)
+				dbSet(usernameA, 'losing_spree', 0)
+				dbSet(usernameB, 'killing_spree', 0)
+				dbSet(usernameB, 'losing_spree', 0)
 				calculate_level(usernameA)
 				calculate_level(usernameB)
 			end
